@@ -1,0 +1,65 @@
+# Development environments
+.vscode/
+.idea/
+*.sublime-*
+*.code-workspace
+.git/
+virtualenv
+passenger_wsgi.py
+/tmp/
+/public/
+LOCAL/
+.env.local
+**/settings/local.py
+OLDsettings.py
+
+# Node/Tailwind
+node_modules/
+blog/fixtures
+
+package-lock.json
+package.json
+tailwind.config.js
+
+# Python/Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Django specific
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+static/images/
+static/css/output.css
+export.json
+
+# OS specific
+.DS_Store
+Thumbs.db
+ruff.toml
