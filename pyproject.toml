@@ -8,18 +8,18 @@ version = "0.1.0"
 description = "A modern, beautiful admin interface for Django using Tailwind CSS v4"
 readme = "README.md"
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Djangify", email = "djangify@djangify.com"}
 ]
 license = {text = "MIT"}
 classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Framework :: Django",
-    "Framework :: Django :: 4.0",
-    "Framework :: Django :: 4.1",
     "Framework :: Django :: 4.2",
     "Framework :: Django :: 5.0",
     "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Framework :: Django :: 6.0",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
@@ -47,7 +47,7 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/djangify/adminita"
+Homepage = "https://adminita.djangify.com"
 Repository = "https://github.com/djangify/adminita"
 Issues = "https://github.com/djangify/adminita/issues"
 
