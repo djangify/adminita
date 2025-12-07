@@ -1,22 +1,24 @@
+// Apply dark mode IMMEDIATELY (before DOM loads)
+(function () {
+  const isDark = localStorage.getItem('darkMode') === 'true' ||
+    (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+
+  if (isDark) {
+    document.documentElement.classList.add('dark');
+  }
+})();
+
+// Rest of the functionality after DOM loads
 document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll("#dark-mode-toggle");
-  const html = document.documentElement;
-
-  // Apply saved mode ON LOAD
-  if (localStorage.darkMode === "true") {
-    html.classList.add("dark");
-  } else {
-    html.classList.remove("dark");
-  }
 
   // Toggle when any button is clicked
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
-      const isDark = html.classList.toggle("dark");
-      localStorage.darkMode = isDark ? "true" : "false";
+      const isDark = document.documentElement.classList.toggle("dark");
+      localStorage.setItem('darkMode', isDark ? "true" : "false");
     });
   });
-
 
   // Mobile sidebar toggle
   const mobileMenuButton = document.getElementById('mobile-menu-button');
