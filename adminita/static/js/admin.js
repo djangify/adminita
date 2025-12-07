@@ -1,37 +1,54 @@
-// Apply dark mode IMMEDIATELY (before DOM loads)
-(function () {
-  const isDark = localStorage.getItem('darkMode') === 'true' ||
-    (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches);
-
-  if (isDark) {
-    document.documentElement.classList.add('dark');
-  }
-})();
-
-// Rest of the functionality after DOM loads
 document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll("#dark-mode-toggle");
+  const html = document.documentElement;
+
+  // Apply saved mode ON LOAD
+  if (localStorage.darkMode === "true") {
+    html.classList.add("dark");
+  } else {
+    html.classList.remove("dark");
+  }
 
   // Toggle when any button is clicked
   buttons.forEach(btn => {
     btn.addEventListener("click", () => {
-      const isDark = document.documentElement.classList.toggle("dark");
-      localStorage.setItem('darkMode', isDark ? "true" : "false");
+      const isDark = html.classList.toggle("dark");
+      localStorage.darkMode = isDark ? "true" : "false";
     });
   });
 
-  // Mobile sidebar toggle
-  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  // Sidebar toggle functionality
+  const sidebarToggle = document.getElementById('sidebar-toggle');
   const sidebar = document.getElementById('sidebar');
   const sidebarOverlay = document.getElementById('sidebar-overlay');
+  const mainContent = document.getElementById('main-content');
 
-  if (mobileMenuButton && sidebar && sidebarOverlay) {
-    function toggleSidebar() {
+  function toggleSidebar() {
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      // Mobile: toggle overlay
       sidebar.classList.toggle('-translate-x-full');
       sidebarOverlay.classList.toggle('hidden');
-    }
+    } else {
+      // Desktop: toggle sidebar width and main content margin
+      const isOpen = !sidebar.classList.contains('-translate-x-full');
 
-    mobileMenuButton.addEventListener('click', toggleSidebar);
+      if (isOpen) {
+        sidebar.classList.add('-translate-x-full');
+        mainContent.classList.remove('md:ml-64');
+      } else {
+        sidebar.classList.remove('-translate-x-full');
+        mainContent.classList.add('md:ml-64');
+      }
+    }
+  }
+
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', toggleSidebar);
+  }
+
+  if (sidebarOverlay) {
     sidebarOverlay.addEventListener('click', toggleSidebar);
   }
 
