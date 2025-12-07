@@ -1,5 +1,6 @@
 ![adminita header](https://github.com/djangify/adminita/blob/336735abb0e7679f4e2622615f891d178fd4bab3/adminita-homepage.png)
 
+
 # Adminita
 
 A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform your Django admin interface into a sleek, responsive dashboard with dark mode support.
@@ -22,10 +23,11 @@ A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform you
 ## 📸 Screenshots
 
 ### Light Mode
-![Light Mode Dashboard](https://via.placeholder.com/800x500?text=Light+Mode+Dashboard)
+
+![adminita light dashboard](https://github.com/djangify/adminita/blob/ac1e111dcf7ffae28dcdca60a78dbf32c848d035/adminita-lightdashboard.png)
 
 ### Dark Mode
-![Dark Mode Dashboard](https://via.placeholder.com/800x500?text=Dark+Mode+Dashboard)
+![Dark Mode Dashboard - IMAGE COMING SOON - once I fix it!]
 
 ## 🚀 Quick Start
 
