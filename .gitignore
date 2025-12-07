@@ -56,7 +56,7 @@ db.sqlite3-journal
 media/
 staticfiles/
 static/images/
-static/css/output.css
+static/css/adminita-tailwind.css
 export.json
 
 # OS specific

@@ -32,14 +32,14 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebarOverlay.classList.toggle('hidden');
     } else {
       // Desktop: toggle sidebar width and main content margin
-      const isOpen = !sidebar.classList.contains('-translate-x-full');
+      const isHidden = sidebar.classList.contains('md:-translate-x-full');
 
-      if (isOpen) {
-        sidebar.classList.add('-translate-x-full');
-        mainContent.classList.remove('md:ml-64');
-      } else {
-        sidebar.classList.remove('-translate-x-full');
+      if (isHidden) {
+        sidebar.classList.remove('md:-translate-x-full');
         mainContent.classList.add('md:ml-64');
+      } else {
+        sidebar.classList.add('md:-translate-x-full');
+        mainContent.classList.remove('md:ml-64');
       }
     }
   }
