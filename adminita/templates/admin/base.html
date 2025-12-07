@@ -31,12 +31,11 @@
         <aside id="sidebar" class="w-64 bg-white dark:bg-gray-800 shadow-sm border-r border-gray-200 dark:border-gray-700 fixed h-full z-40 transform md:transform-none transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0">
             
             {% block branding %}
-                <div class="h-16 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-                    <div class="bg-red-600 text-white p-2 text-center font-bold">DEBUG: ADMINITA TEMPLATE LOADED</div>
-                    <a href="{% url 'admin:index' %}" class="text-sm font-normal text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                        {{ site_header|default:_('Django administration') }}
-                    </a>
-                </div>
+            <div class="h-16 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
+                <a href="{% url 'admin:index' %}" class="text-sm font-normal text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                    {{ site_header|default:_('Django administration') }}xx
+                </a>
+            </div>
             {% endblock %}
             
             {% block nav-global %}{% endblock %}
