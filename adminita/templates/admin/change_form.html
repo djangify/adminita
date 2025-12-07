@@ -1,4 +1,4 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base.html" %}
 {% load i18n admin_urls static admin_modify %}
 
 {% block content_title %}
@@ -173,6 +173,8 @@
 {% endblock %}
 
 {% block extrajs %}
+    <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
     {{ block.super }}
     {{ media.js }}
 {% endblock %}
