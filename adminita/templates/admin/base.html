@@ -69,8 +69,8 @@
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden md:hidden"></div>
         {% endblock %}
         
-        <!-- Main Content -->
-        <div class="flex-1 flex flex-col md:ml-64">
+        <!-- Main Content - FIXED: Changed from md:ml-64 to md:pl-64 and added w-full -->
+        <div class="flex-1 flex flex-col w-full md:pl-64">
             
             <!-- Top Bar -->
             {% block header %}
@@ -153,7 +153,7 @@
             <footer class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
                 <div class="text-sm text-gray-600 dark:text-gray-400 text-center">
                     {% block footer_content %}
-                    Powered by <a href="/" class="text-primary-600 dark:text-primary-400 hover:underline" target="_blank">Adminita</a>
+                    Powered by <a href="https://github.com/djangify/adminita" class="text-primary-600 dark:text-primary-400 hover:underline" target="_blank">Adminita</a>
                     {% endblock %}
                 </div>
             </footer>
