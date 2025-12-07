@@ -1,0 +1,133 @@
+/* Adminita - Django Admin Theme using Tailwind CSS v4 */
+
+@import "tailwindcss";
+
+/* Theme customization for Adminita */
+@theme {
+  /* Primary colors - Blue theme for admin */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+
+  /* Custom gray shades for better dark mode */
+  --color-gray-750: #2d3748;
+}
+
+/* Custom component styles */
+@layer components {
+
+  /* Django admin form field overrides */
+  .admin-input {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors;
+  }
+
+  .admin-textarea {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors min-h-24;
+  }
+
+  .admin-select {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors;
+  }
+
+  .admin-checkbox {
+    @apply rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500 focus:ring-offset-0;
+  }
+
+  .admin-radio {
+    @apply border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500 focus:ring-offset-0;
+  }
+
+  .admin-link {
+    @apply text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 underline transition-colors;
+  }
+
+  .admin-btn-primary {
+    @apply inline-flex items-center px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+
+  .admin-btn-secondary {
+    @apply inline-flex items-center px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors;
+  }
+
+  .admin-btn-danger {
+    @apply inline-flex items-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors;
+  }
+
+  .admin-btn-outline {
+    @apply inline-flex items-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors;
+  }
+
+  .admin-card {
+    @apply bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700;
+  }
+
+  .errorlist {
+    @apply text-red-600 dark:text-red-400 text-sm mt-1;
+  }
+
+  .errorlist li {
+    @apply mb-1;
+  }
+
+  .help,
+  .helptext {
+    @apply text-sm text-gray-600 dark:text-gray-400 mt-1 block;
+  }
+
+  /* Django admin specific class mappings */
+  .vTextField,
+  .vURLField,
+  .vIntegerField,
+  .vBigIntegerField,
+  .vPositiveIntegerField,
+  .vSmallIntegerField,
+  .vEmailField {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors;
+  }
+
+  .vLargeTextField,
+  .vXMLLargeTextField {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors min-h-24;
+  }
+
+  select:not([multiple]) {
+    @apply w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors;
+  }
+
+  input[type="checkbox"]:not(.action-select) {
+    @apply rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500 focus:ring-offset-0;
+  }
+
+  input[type="radio"] {
+    @apply border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500 focus:ring-offset-0;
+  }
+
+  .action-select {
+    @apply rounded border-gray-300 dark:border-gray-600 text-primary-600 focus:ring-primary-500 focus:ring-offset-0;
+  }
+
+  .submit-row {
+    @apply flex items-center justify-between bg-gray-50 dark:bg-gray-800 px-6 py-4 rounded-lg border border-gray-200 dark:border-gray-700;
+  }
+
+  .deletelink {
+    @apply inline-flex items-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors;
+  }
+
+  .addlink {
+    @apply inline-flex items-center px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500;
+  }
+
+  .changelink,
+  .viewlink {
+    @apply text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 underline transition-colors;
+  }
+}

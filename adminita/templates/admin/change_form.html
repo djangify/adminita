@@ -1,0 +1,178 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_modify %}
+
+{% block content_title %}
+    {% if add %}
+        {% blocktrans with name=opts.verbose_name %}Add {{ name }}{% endblocktrans %}
+    {% else %}
+        {% blocktrans with name=opts.verbose_name %}Change {{ name }}{% endblocktrans %}
+    {% endif %}
+{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {{ media.css }}
+{% endblock %}
+
+{% block content %}
+<form method="post" id="{{ opts.model_name }}_form" enctype="multipart/form-data" class="space-y-6">
+    {% csrf_token %}
+    
+    {% if errors %}
+    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4">
+        <div class="flex items-start">
+            <svg class="w-5 h-5 text-red-600 dark:text-red-400 mt-0.5 mr-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+            </svg>
+            <div>
+                <h3 class="text-sm font-medium text-red-800 dark:text-red-200">
+                    {% trans "Please correct the errors below." %}
+                </h3>
+                {{ adminform.form.non_field_errors }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Main Form -->
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        {% block field_sets %}
+        {% for fieldset in adminform %}
+        <div class="{% if not forloop.first %}border-t border-gray-200 dark:border-gray-700{% endif %}">
+            {% if fieldset.name %}
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-750">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    {{ fieldset.name }}
+                </h2>
+                {% if fieldset.description %}
+                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                    {{ fieldset.description|safe }}
+                </p>
+                {% endif %}
+            </div>
+            {% endif %}
+            
+            <div class="px-6 py-6 space-y-6">
+                {% for line in fieldset %}
+                <div class="{% if line.fields|length > 1 %}grid grid-cols-1 md:grid-cols-{{ line.fields|length }} gap-6{% endif %}">
+                    {% for field in line %}
+                    <div class="{% if field.is_readonly %}opacity-75{% endif %}">
+                        <label for="{{ field.field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ field.field.label }}
+                            {% if field.field.field.required %}
+                            <span class="text-red-600 dark:text-red-400">*</span>
+                            {% endif %}
+                        </label>
+                        
+                        {% if field.is_readonly %}
+                        <div class="px-3 py-2 bg-gray-50 dark:bg-gray-750 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100">
+                            {{ field.contents }}
+                        </div>
+                        {% else %}
+                        {{ field.field }}
+                        {% endif %}
+                        
+                        {% if field.field.help_text %}
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            {{ field.field.help_text|safe }}
+                        </p>
+                        {% endif %}
+                        
+                        {% if field.field.errors %}
+                        <div class="mt-2 text-sm text-red-600 dark:text-red-400">
+                            {{ field.field.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+        {% endblock %}
+    </div>
+    
+    <!-- Inline Forms -->
+    {% block inline_field_sets %}
+    {% for inline_admin_formset in inline_admin_formsets %}
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-750 border-b border-gray-200 dark:border-gray-700">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
+            </h2>
+        </div>
+        
+        <div class="p-6">
+            {{ inline_admin_formset.formset.management_form }}
+            
+            {% for inline_admin_form in inline_admin_formset %}
+            <div class="mb-6 pb-6 border-b border-gray-200 dark:border-gray-700 last:border-b-0 last:mb-0 last:pb-0">
+                {{ inline_admin_form.form.non_field_errors }}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {% for fieldset in inline_admin_form %}
+                    {% for line in fieldset %}
+                    {% for field in line %}
+                    <div>
+                        <label for="{{ field.field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                            {{ field.field.label }}
+                        </label>
+                        {{ field.field }}
+                        
+                        {% if field.field.errors %}
+                        <div class="mt-2 text-sm text-red-600 dark:text-red-400">
+                            {{ field.field.errors }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+    {% endblock %}
+    
+    <!-- Submit Buttons -->
+    <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 px-6 py-4 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div class="flex items-center space-x-3">
+            <button type="submit" name="_save" class="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                {% trans 'Save' %}
+            </button>
+            
+            {% if show_save_and_add_another %}
+            <button type="submit" name="_addanother" class="inline-flex items-center px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors">
+                {% trans 'Save and add another' %}
+            </button>
+            {% endif %}
+            
+            {% if show_save_and_continue %}
+            <button type="submit" name="_continue" class="inline-flex items-center px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors">
+                {% trans 'Save and continue editing' %}
+            </button>
+            {% endif %}
+        </div>
+        
+        <div class="flex items-center space-x-3">
+            {% if show_delete_link %}
+            <a href="{% url opts|admin_urlname:'delete' original.pk|admin_urlquote %}" class="inline-flex items-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+                {% trans 'Delete' %}
+            </a>
+            {% endif %}
+            
+            <a href="{% url opts|admin_urlname:'changelist' %}" class="inline-flex items-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors">
+                {% trans 'Cancel' %}
+            </a>
+        </div>
+    </div>
+</form>
+{% endblock %}
+
+{% block extrajs %}
+    {{ block.super }}
+    {{ media.js }}
+{% endblock %}
