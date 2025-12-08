@@ -94,6 +94,7 @@
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
     --color-primary-50: #eff6ff;
+    --color-primary-100: #dbeafe;
     --color-primary-300: #93c5fd;
     --color-primary-400: #60a5fa;
     --color-primary-500: #3b82f6;
@@ -803,6 +804,9 @@
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
+  .pt-8 {
+    padding-top: calc(var(--spacing) * 8);
+  }
   .pt-32 {
     padding-top: calc(var(--spacing) * 32);
   }
@@ -1421,6 +1425,11 @@
       color: var(--color-gray-400);
     }
   }
+  .dark\:text-gray-500 {
+    @media (prefers-color-scheme: dark) {
+      color: var(--color-gray-500);
+    }
+  }
   .dark\:text-green-200 {
     @media (prefers-color-scheme: dark) {
       color: var(--color-green-200);
@@ -1923,7 +1932,7 @@
     }
   }
   select:not([multiple]) {
-    width: 100%;
+    max-width: var(--container-md);
     border-radius: var(--radius-lg);
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -2237,6 +2246,109 @@
   .related-widget-wrapper-link img {
     height: calc(var(--spacing) * 4);
     width: calc(var(--spacing) * 4);
+  }
+  .datetimeshortcuts {
+    margin-left: calc(var(--spacing) * 2);
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 1);
+  }
+  .datetimeshortcuts a {
+    color: var(--color-primary-600);
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-primary-800);
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      color: var(--color-primary-400);
+    }
+    @media (prefers-color-scheme: dark) {
+      &:hover {
+        @media (hover: hover) {
+          color: var(--color-primary-300);
+        }
+      }
+    }
+  }
+  .datetimeshortcuts img {
+    display: inline-block;
+    height: calc(var(--spacing) * 4);
+    width: calc(var(--spacing) * 4);
+  }
+  input[type="file"] {
+    display: block;
+    width: 100%;
+    font-size: var(--text-sm);
+    line-height: var(--tw-leading, var(--text-sm--line-height));
+    color: var(--color-gray-500);
+    &::file-selector-button {
+      margin-right: calc(var(--spacing) * 4);
+    }
+    &::file-selector-button {
+      cursor: pointer;
+    }
+    &::file-selector-button {
+      border-radius: var(--radius-lg);
+    }
+    &::file-selector-button {
+      border-style: var(--tw-border-style);
+      border-width: 0px;
+    }
+    &::file-selector-button {
+      background-color: var(--color-primary-50);
+    }
+    &::file-selector-button {
+      padding-inline: calc(var(--spacing) * 4);
+    }
+    &::file-selector-button {
+      padding-block: calc(var(--spacing) * 2);
+    }
+    &::file-selector-button {
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
+    }
+    &::file-selector-button {
+      --tw-font-weight: var(--font-weight-medium);
+      font-weight: var(--font-weight-medium);
+    }
+    &::file-selector-button {
+      color: var(--color-primary-700);
+    }
+    &::file-selector-button {
+      transition-property: color, background-color, border-color, outline-color, text-decoration-color, fill, stroke, --tw-gradient-from, --tw-gradient-via, --tw-gradient-to;
+      transition-timing-function: var(--tw-ease, var(--default-transition-timing-function));
+      transition-duration: var(--tw-duration, var(--default-transition-duration));
+    }
+    &:hover {
+      @media (hover: hover) {
+        &::file-selector-button {
+          background-color: var(--color-primary-100);
+        }
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      color: var(--color-gray-400);
+    }
+    @media (prefers-color-scheme: dark) {
+      &::file-selector-button {
+        background-color: var(--color-gray-700);
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      &::file-selector-button {
+        color: var(--color-primary-400);
+      }
+    }
+    @media (prefers-color-scheme: dark) {
+      &:hover {
+        @media (hover: hover) {
+          &::file-selector-button {
+            background-color: var(--color-gray-600);
+          }
+        }
+      }
+    }
   }
 }
 @property --tw-translate-x {
