@@ -9,10 +9,6 @@
     {% endif %}
 {% endblock %}
 
-{% block extrastyle %}
-    {{ block.super }}
-    {{ media.css }}
-{% endblock %}
 
 {% block content %}
 <form method="post" id="{{ opts.model_name }}_form" enctype="multipart/form-data" class="space-y-6">
@@ -173,8 +169,21 @@
 {% endblock %}
 
 {% block extrajs %}
+    {{ block.super }}
+    <script src="{% url 'admin:jsi18n' %}"></script>
     <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'admin/js/jquery.init.js' %}"></script>
-    {{ block.super }}
+    <script src="{% static 'admin/js/urlify.js' %}"></script>
+    <script src="{% static 'admin/js/prepopulate.js' %}"></script>
     {{ media.js }}
+    {% if adminform.prepopulated_fields %}
+    <script>
+        (function($) {
+            {% for field, dependencies in adminform.prepopulated_fields.items %}
+            $('#id_{{ field }}').data('dependency_list', ['{{ dependencies|join:"', '" }}']);
+            $('#id_{{ field }}').prepopulate(['#id_{{ dependencies|join:", #id_" }}'], {{ field.field.max_length|default:"50" }});
+            {% endfor %}
+        })(django.jQuery);
+    </script>
+    {% endif %}
 {% endblock %}
