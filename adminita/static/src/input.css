@@ -185,25 +185,4 @@
     @apply w-4 h-4;
   }
 
-  #result_list img {
-    @apply max-w-[60px] max-h-[60px] rounded;
-  }
-
-  /* Related widget wrapper (ForeignKey add/edit/delete icons) */
-  .related-widget-wrapper {
-    @apply flex items-center gap-2;
-  }
-
-  .related-widget-wrapper select {
-    @apply flex-1;
-  }
-
-  .related-widget-wrapper-link {
-    @apply inline-flex items-center justify-center w-7 h-7 text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors;
-  }
-
-  .related-widget-wrapper-link img {
-    @apply w-4 h-4;
-  }
-
 }

@@ -93,12 +93,14 @@
     --default-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     --default-font-family: var(--font-sans);
     --default-mono-font-family: var(--font-mono);
+    --color-primary-50: #eff6ff;
     --color-primary-300: #93c5fd;
     --color-primary-400: #60a5fa;
     --color-primary-500: #3b82f6;
     --color-primary-600: #2563eb;
     --color-primary-700: #1d4ed8;
     --color-primary-800: #1e40af;
+    --color-primary-950: #172554;
     --color-gray-750: #2d3748;
   }
 }
@@ -251,6 +253,9 @@
   }
 }
 @layer utilities {
+  .collapse {
+    visibility: collapse;
+  }
   .absolute {
     position: absolute;
   }

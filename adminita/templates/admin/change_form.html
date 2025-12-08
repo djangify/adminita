@@ -176,14 +176,5 @@
     <script src="{% static 'admin/js/urlify.js' %}"></script>
     <script src="{% static 'admin/js/prepopulate.js' %}"></script>
     {{ media.js }}
-    {% if adminform.prepopulated_fields %}
-    <script>
-        (function($) {
-            {% for field, dependencies in adminform.prepopulated_fields.items %}
-            $('#id_{{ field }}').data('dependency_list', ['{{ dependencies|join:"', '" }}']);
-            $('#id_{{ field }}').prepopulate(['#id_{{ dependencies|join:", #id_" }}'], {{ field.field.max_length|default:"50" }});
-            {% endfor %}
-        })(django.jQuery);
-    </script>
-    {% endif %}
+     {% if add %}{% prepopulated_fields_js %}{% endif %}
 {% endblock %}
