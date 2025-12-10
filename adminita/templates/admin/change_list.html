@@ -1,6 +1,8 @@
 {% extends "admin/base_site.html" %}
 {% load i18n admin_urls static admin_list %}
-
+<div style="background:red; color:white; padding:10px;">
+    DEBUG: ADMINITA change_list LOADED
+</div>
 {% block content_title %}
     {% if cl.opts.verbose_name_plural %}
         {{ cl.opts.verbose_name_plural|capfirst }}
@@ -12,149 +14,162 @@
 {% block extrastyle %}
     {{ block.super }}
     {{ media.css }}
+    <style>
+        /* Hide Django's default filter sidebar that appears outside our template */
+        #changelist-filter { display: none !important; }
+    </style>
 {% endblock %}
 
 {% block content %}
-<div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+<div class="flex flex-col lg:flex-row gap-6">
+    
+    <!-- MAIN CONTENT AREA -->
+    <div class="flex-1">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
 
-    <!-- Toolbar -->
-    <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-4">
+            <!-- Toolbar -->
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-4">
 
-        <!-- Search -->
-        <div class="flex-1 min-w-[300px]">
-            {% block search %}
-            {% if cl.search_fields %}
-            <form id="changelist-search" method="get" class="flex items-center space-x-2">
-                <div class="relative flex-1">
-                    <input type="search"
-                           name="{{ search_var }}"
-                           value="{{ cl.query }}"
-                           placeholder="{% trans 'Search' %}"
-                           class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                    <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
+                <!-- Search -->
+                <div class="flex-1 min-w-[300px]">
+                    {% block search %}
+                    {% if cl.search_fields %}
+                    <form id="changelist-search" method="get" class="flex items-center space-x-2">
+                        <div class="relative flex-1">
+                            <input type="search"
+                                   name="{{ search_var }}"
+                                   value="{{ cl.query }}"
+                                   placeholder="{% trans 'Search' %}"
+                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </div>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                            {% trans 'Search' %}
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% endblock %}
                 </div>
-                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                    {% trans 'Search' %}
-                </button>
-            </form>
-            {% endif %}
-            {% endblock %}
-        </div>
 
-        <!-- Actions -->
-        <div class="flex items-center space-x-3">
-            {% block object-tools %}
-            {% if has_add_permission %}
-            <a href="{% url cl.opts|admin_urlname:'add' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                </svg>
-                {% trans 'Add' %} {{ cl.opts.verbose_name }}
-            </a>
+                <!-- Actions -->
+                <div class="flex items-center space-x-3">
+                    {% block object-tools %}
+                    {% if has_add_permission %}
+                    <a href="{% url cl.opts|admin_urlname:'add' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        {% trans 'Add' %} {{ cl.opts.verbose_name }}
+                    </a>
+                    {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="overflow-x-auto">
+                {% block result_list %}
+                {% if cl.result_count %}
+                    {% result_list cl %}
+                {% else %}
+                <div class="px-6 py-12 text-center">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                    </svg>
+                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+                        {% trans 'No results found' %}
+                    </p>
+                </div>
+                {% endif %}
+                {% endblock %}
+            </div>
+
+            <!-- Pagination -->
+            {% if cl.result_count %}
+            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                <div class="text-sm text-gray-700 dark:text-gray-300">
+                    {% if cl.result_count == 1 %}
+                        1 {{ cl.opts.verbose_name }}
+                    {% else %}
+                        {{ cl.result_count }} {{ cl.opts.verbose_name_plural }}
+                    {% endif %}
+                </div>
+
+                {% block pagination %}
+                {% if cl.can_show_all or cl.multi_page %}
+                <div class="flex items-center space-x-2">
+                    {% if cl.can_show_all %}
+                    <a href="?{% if cl.is_popup %}_popup=1&{% endif %}all="
+                       class="px-3 py-1 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                        {% trans 'Show all' %}
+                    </a>
+                    {% endif %}
+
+                    {% if cl.multi_page %}
+                    <nav class="flex items-center space-x-1">
+                        {% if cl.page_num > 0 %}
+                        <a href="?p={{ cl.page_num|add:'-1' }}"
+                           class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            {% trans 'Previous' %}
+                        </a>
+                        {% endif %}
+
+                        <span class="px-3 py-1 text-sm text-gray-700 dark:text-gray-300">
+                            {% blocktrans with page_num=cl.page_num|add:1 num_pages=cl.paginator.num_pages %}
+                                Page {{ page_num }} of {{ num_pages }}
+                            {% endblocktrans %}
+                        </span>
+
+                        {% if cl.page_num < cl.paginator.num_pages|add:"-1" %}
+                        <a href="?p={{ cl.page_num|add:1 }}"
+                           class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            {% trans 'Next' %}
+                        </a>
+                        {% endif %}
+                    </nav>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endblock %}
+            </div>
             {% endif %}
-            {% endblock %}
         </div>
     </div>
 
-    <!-- MAIN WRAPPER: RESULTS + FILTERS -->
-    <div class="flex flex-col lg:flex-row lg:space-x-8">
-
-        <!-- RESULTS (LEFT COLUMN) -->
-        <div class="flex-1 overflow-x-auto">
-            {% block result_list %}
-            {% if cl.result_count %}
-
-                {% result_list cl %}
-
-            {% else %}
-            <div class="px-6 py-12 text-center">
-                <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
-                </svg>
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    {% trans 'No results found' %}
-                </p>
-            </div>
-            {% endif %}
-            {% endblock %}
-        </div> <!-- end results column -->
-
-        <!-- FILTER SIDEBAR (RIGHT COLUMN) -->
-        {% block sidebar %}
-        {% if cl.has_filters %}
-        <aside class="w-full lg:w-64 shrink-0 mt-8 lg:mt-0">
-
-            <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
+    <!-- FILTER SIDEBAR -->
+    {% block sidebar %}
+    {% if cl.has_filters %}
+    <aside class="w-full lg:w-72 shrink-0">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
                 {% trans 'Filter' %}
             </h3>
 
             {% for spec in cl.filter_specs %}
-            <div class="mb-4 p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-                <h4 class="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">
+            <div class="mb-4 {% if not forloop.last %}pb-4 border-b border-gray-100 dark:border-gray-700{% endif %}">
+                <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                     {{ spec.title }}
                 </h4>
-                {{ spec }}
+                <ul class="space-y-1">
+                    {% for choice in spec.choices %}
+                    <li>
+                        <a href="{{ choice.query_string }}"
+                           class="block px-3 py-1.5 text-sm rounded-md transition-colors {% if choice.selected %}bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium{% else %}text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white{% endif %}">
+                            {{ choice.display }}
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
             {% endfor %}
-
-        </aside>
-        {% endif %}
-        {% endblock %}
-
-    </div> <!-- end results + filters wrapper -->
-
-    <!-- Pagination -->
-    {% if cl.result_count %}
-    <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
-        <div class="text-sm text-gray-700 dark:text-gray-300">
-            {% if cl.result_count == 1 %}
-                1 {{ cl.opts.verbose_name }}
-            {% else %}
-                {{ cl.result_count }} {{ cl.opts.verbose_name_plural }}
-            {% endif %}
         </div>
-
-        {% block pagination %}
-        {% if cl.can_show_all or cl.multi_page %}
-        <div class="flex items-center space-x-2">
-            {% if cl.can_show_all %}
-            <a href="?{% if cl.is_popup %}_popup=1&{% endif %}all="
-               class="px-3 py-1 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                {% trans 'Show all' %}
-            </a>
-            {% endif %}
-
-            {% if cl.multi_page %}
-            <nav class="flex items-center space-x-1">
-                {% if cl.page_num > 0 %}
-                <a href="?p={{ cl.page_num|add:'-1' }}"
-                   class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    {% trans 'Previous' %}
-                </a>
-                {% endif %}
-
-                <span class="px-3 py-1 text-sm text-gray-700 dark:text-gray-300">
-                    {% blocktrans with page_num=cl.page_num|add:1 num_pages=cl.paginator.num_pages %}
-                        Page {{ page_num }} of {{ num_pages }}
-                    {% endblocktrans %}
-                </span>
-
-                {% if cl.page_num < cl.paginator.num_pages|add:"-1" %}
-                <a href="?p={{ cl.page_num|add:1 }}"
-                   class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                    {% trans 'Next' %}
-                </a>
-                {% endif %}
-            </nav>
-            {% endif %}
-        </div>
-        {% endif %}
-        {% endblock %}
-    </div>
+    </aside>
     {% endif %}
+    {% endblock %}
+
 </div>
 {% endblock %}
 
