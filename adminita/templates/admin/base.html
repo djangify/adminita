@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     
-    <link rel="stylesheet" href="{% static '/css/adminita-tailwind.css' %}">
+    <link rel="stylesheet" href="{% static 'adminita/adminita-tailwind.css' %}">
+    <script src="{% static 'adminita/adminita-tailwind.js' %}" defer></script>
     <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
   
   </head>
@@ -165,7 +166,7 @@
         </div>
     </div>
     
-    <script src="{% static 'js/adminita-tailwind.js' %}"></script>
+    
 
     {% block extrajs %}{% endblock %}
 </body>

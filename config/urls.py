@@ -8,6 +8,5 @@ admin.site.site_title = "Adminita Admin Portal"
 admin.site.index_title = "Welcome to Adminita"
 
 urlpatterns = [
-    path("", views.home, name="home"),
     path("admin/", admin.site.urls),
 ]

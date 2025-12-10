@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "blog",
+   
 ]
 
 MIDDLEWARE = [
@@ -115,4 +115,4 @@ USE_I18N = True
 
 USE_TZ = True
 
-from logging_config import LOGGING  # noqa: F401, E402
+

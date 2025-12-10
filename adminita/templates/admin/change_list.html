@@ -1,8 +1,6 @@
-{% extends "admin/base_site.html" %}
+{% extends "admin/base.html" %}
 {% load i18n admin_urls static admin_list %}
-<div style="background:red; color:white; padding:10px;">
-    DEBUG: ADMINITA change_list LOADED
-</div>
+
 {% block content_title %}
     {% if cl.opts.verbose_name_plural %}
         {{ cl.opts.verbose_name_plural|capfirst }}
@@ -14,14 +12,11 @@
 {% block extrastyle %}
     {{ block.super }}
     {{ media.css }}
-    <style>
-        /* Hide Django's default filter sidebar that appears outside our template */
-        #changelist-filter { display: none !important; }
-    </style>
+   
 {% endblock %}
 
 {% block content %}
-<div class="flex flex-col lg:flex-row gap-6">
+<div>
     
     <!-- MAIN CONTENT AREA -->
     <div class="flex-1">
@@ -139,36 +134,7 @@
         </div>
     </div>
 
-    <!-- FILTER SIDEBAR -->
-    {% block sidebar %}
-    {% if cl.has_filters %}
-    <aside class="w-full lg:w-72 shrink-0">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4 pb-2 border-b border-gray-200 dark:border-gray-700">
-                {% trans 'Filter' %}
-            </h3>
-
-            {% for spec in cl.filter_specs %}
-            <div class="mb-4 {% if not forloop.last %}pb-4 border-b border-gray-100 dark:border-gray-700{% endif %}">
-                <h4 class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                    {{ spec.title }}
-                </h4>
-                <ul class="space-y-1">
-                    {% for choice in spec.choices %}
-                    <li>
-                        <a href="{{ choice.query_string }}"
-                           class="block px-3 py-1.5 text-sm rounded-md transition-colors {% if choice.selected %}bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-medium{% else %}text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white{% endif %}">
-                            {{ choice.display }}
-                        </a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-            {% endfor %}
-        </div>
-    </aside>
-    {% endif %}
-    {% endblock %}
+   
 
 </div>
 {% endblock %}
