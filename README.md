@@ -137,6 +137,31 @@ python manage.py collectstatic --noinput
 --color-gray-50 through --color-gray-900
 --color-gray-750 (custom for dark mode)
 ```
+## 🔧 Utility Classes
+
+Adminita provides utility classes to help with common admin patterns.
+
+### AlwaysVisibleAdmin
+
+Ensures models always appear in the admin index, even if they have custom permissions:
+```python
+from adminita.utils import AlwaysVisibleAdmin
+
+@admin.register(MyModel)
+class MyModelAdmin(AlwaysVisibleAdmin):
+    pass
+```
+
+### SingletonAdmin
+
+For models that should only have one instance (like Site Settings):
+```python
+from adminita.utils import SingletonAdmin
+
+@admin.register(SiteConfiguration)
+class SiteConfigurationAdmin(SingletonAdmin):
+    list_display = ['site_name']
+```
 
 ## 🛠️ Development
 
