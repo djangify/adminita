@@ -73,19 +73,26 @@ STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 ```
 
-3. **Collect static files**:
+3. **Add customization to project urls.py file**:
+```# Customize admin site
+admin.site.site_header = "Adminita Demo"
+admin.site.site_title = "Adminita Admin Portal"
+admin.site.index_title = "Welcome to Adminita"
+```
+
+4. **Collect static files**:
 
 ```bash
 python manage.py collectstatic --noinput
 ```
 
-4. **Run your server**:
+5. **Run your server**:
 
 ```bash
 python manage.py runserver
 ```
 
-5. **Visit the admin** at `http://localhost:8000/admin/`
+6. **Visit the admin** at `http://localhost:8000/admin/`
 
 That's it! Your Django admin should now have the Adminita theme applied.
 
