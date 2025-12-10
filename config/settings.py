@@ -114,3 +114,5 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
+
+from logging_config import LOGGING  # noqa: F401, E402
