@@ -168,6 +168,11 @@
 </form>
 {% endblock %}
 
+{% block extrastyle %}
+    {{ block.super }}
+    {{ adminform.form.media.css }}
+{% endblock %}
+
 {% block extrajs %}
     {{ block.super }}
     <script src="{% url 'admin:jsi18n' %}"></script>
@@ -175,6 +180,8 @@
     <script src="{% static 'admin/js/jquery.init.js' %}"></script>
     <script src="{% static 'admin/js/urlify.js' %}"></script>
     <script src="{% static 'admin/js/prepopulate.js' %}"></script>
+    <script src="{% static 'admin/js/calendar.js' %}"></script>
+    <script src="{% static 'admin/js/admin/DateTimeShortcuts.js' %}"></script>
     {{ media.js }}
-     {% if add %}{% prepopulated_fields_js %}{% endif %}
+    {% if add %}{% prepopulated_fields_js %}{% endif %}
 {% endblock %}

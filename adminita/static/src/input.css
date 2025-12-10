@@ -202,9 +202,98 @@
   input[type="file"] {
     @apply block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 dark:file:bg-gray-700 dark:file:text-primary-400 file:cursor-pointer hover:file:bg-primary-100 dark:hover:file:bg-gray-600 file:transition-colors;
   }
-}
 
-/* Hide TinyMCE metadata / helper blocks under ProseEditorField */
-.tox-tinymce+div {
-  display: none !important;
+
+  /* Hide TinyMCE metadata / helper blocks under ProseEditorField */
+  .tox-tinymce+div {
+    display: none !important;
+  }
+
+  /* Hide django-prose-editor toolbar labels/metadata */
+  .ProseMirror-menubar-wrapper .ProseMirror-menuitem-label,
+  .prose-editor-wrapper [class*="format_"],
+  .prose-editor [class*="format_"],
+  [data-prose-editor] [class*="format_"],
+  .field-description [class*="format_"],
+  .form-row [class*="format_"] {
+    display: none !important;
+  }
+
+  /* Alternative: hide any stray text nodes that look like toolbar labels */
+  .form-row>div:not([class]) {
+    font-size: 0;
+  }
+
+  .form-row>div:not([class]) * {
+    font-size: 0.875rem;
+  }
+
+  /* Django admin calendar widget styling */
+  .calendarbox,
+  .clockbox {
+    @apply bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg z-50;
+  }
+
+  .calendar {
+    @apply bg-white dark:bg-gray-800;
+  }
+
+  .calendar caption {
+    @apply bg-primary-600 text-white font-semibold py-2 px-3;
+  }
+
+  .calendar th {
+    @apply text-xs font-medium text-gray-600 dark:text-gray-400 py-1;
+  }
+
+  .calendar td {
+    @apply text-center;
+  }
+
+  .calendar td a {
+    @apply block px-2 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-900 rounded;
+  }
+
+  .calendar td.today a {
+    @apply bg-primary-500 text-white font-bold;
+  }
+
+  .calendar-shortcuts {
+    @apply bg-gray-50 dark:bg-gray-750 px-3 py-2 border-t border-gray-200 dark:border-gray-700;
+  }
+
+  .calendar-shortcuts a {
+    @apply text-sm text-primary-600 dark:text-primary-400 hover:underline mr-3;
+  }
+
+  .calendar-cancel {
+    @apply bg-gray-50 dark:bg-gray-750 px-3 py-2 border-t border-gray-200 dark:border-gray-700 text-center;
+  }
+
+  .calendar-cancel a {
+    @apply text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900;
+  }
+
+  /* Clock widget */
+  .clockbox h2 {
+    @apply bg-primary-600 text-white font-semibold py-2 px-3;
+  }
+
+  .clockbox .timelist {
+    @apply py-2;
+  }
+
+  .clockbox .timelist li a {
+    @apply block px-3 py-1 text-sm text-gray-700 dark:text-gray-300 hover:bg-primary-100 dark:hover:bg-primary-900;
+  }
+
+  /* Date/time shortcut icons */
+  .datetimeshortcuts a {
+    @apply text-primary-600 dark:text-primary-400;
+  }
+
+  .date-icon,
+  .clock-icon {
+    @apply inline-block w-4 h-4 cursor-pointer;
+  }
 }
