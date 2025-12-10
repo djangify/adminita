@@ -54,6 +54,7 @@
     --color-white: #fff;
     --spacing: 0.25rem;
     --container-md: 28rem;
+    --container-lg: 32rem;
     --container-3xl: 48rem;
     --container-4xl: 56rem;
     --container-7xl: 80rem;
@@ -1846,7 +1847,7 @@
     }
   }
   .vTextField, .vURLField, .vIntegerField, .vBigIntegerField, .vPositiveIntegerField, .vSmallIntegerField, .vEmailField {
-    width: 100%;
+    max-width: var(--container-lg);
     border-radius: var(--radius-lg);
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -1888,7 +1889,7 @@
   }
   .vLargeTextField, .vXMLLargeTextField {
     min-height: calc(var(--spacing) * 24);
-    width: 100%;
+    max-width: var(--container-3xl);
     border-radius: var(--radius-lg);
     border-style: var(--tw-border-style);
     border-width: 1px;

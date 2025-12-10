@@ -74,10 +74,13 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 ```
 
 3. **Add customization to project urls.py file**:
-```# Customize admin site
-admin.site.site_header = "Adminita Demo"
-admin.site.site_title = "Adminita Admin Portal"
-admin.site.index_title = "Welcome to Adminita"
+Adminita uses Django's built-in admin site customization. Add these lines to your `urls.py`:
+```python
+from django.contrib import admin
+
+admin.site.site_header = "Your Site Name"
+admin.site.site_title = "Your Site Title" 
+admin.site.index_title = "Welcome to Your Site"
 ```
 
 4. **Collect static files**:
