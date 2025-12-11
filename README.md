@@ -252,11 +252,11 @@ The dark mode toggle button appears in the interface, but clicking it does not s
 
 **Help Wanted**: If you have experience with JavaScript and dark mode implementation, we'd love your help! See [Contributing](#-contributing) below.
 
-### Logout Button Security (FIXED ✅)
+### Adding Filter Sidebar 
 
-~~The logout button was using a GET request instead of POST, causing a 405 error.~~
+~~Wanted to include a filter section on the side but kept clashing with Django files. Need to pay more time to it to get it working~~
 
-**Status**: Fixed in latest version
+**Status**: Still experimenting
 
 ## 📚 Documentation
 

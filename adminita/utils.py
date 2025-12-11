@@ -54,3 +54,17 @@ class SingletonAdmin(AlwaysVisibleAdmin):
     def has_delete_permission(self, request, obj=None):
         # Prevent deletion of the singleton
         return False
+
+    def changelist_view(self, request, extra_context=None):
+        # If an instance exists, redirect directly to edit it
+        obj = self.model.objects.first()
+        if obj:
+            from django.shortcuts import redirect
+            from django.urls import reverse
+            url = reverse(
+                f'admin:{self.model._meta.app_label}_{self.model._meta.model_name}_change',
+                args=[obj.pk]
+            )
+            return redirect(url)
+        # Otherwise show the standard changelist (with Add button)
+        return super().changelist_view(request, extra_context=extra_context)
