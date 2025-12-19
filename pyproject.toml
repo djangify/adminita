@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "adminita"
-version = "0.1.0"
-description = "A modern, beautiful admin interface for Django using Tailwind CSS v4"
+version = "0.1.1"
+description = "A modern admin interface for Django using Tailwind CSS v4"
 readme = "README.md"
 authors = [
-    {name = "Djangify", email = "djangify@djangify.com"}
+    {name = "Adminita", email = "hello@todiane.com"}
 ]
 license = {text = "MIT"}
 classifiers = [
@@ -48,7 +48,7 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://adminita.djangify.com"
+Homepage = "https://adminita.todiane.com"
 Repository = "https://github.com/djangify/adminita"
 Issues = "https://github.com/djangify/adminita/issues"
 
