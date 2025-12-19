@@ -16,7 +16,7 @@
 {% endblock %}
 
 {% block content %}
-<div>
+<div class="flex gap-6">
     
     <!-- MAIN CONTENT AREA -->
     <div class="flex-1">
@@ -134,7 +134,37 @@
         </div>
     </div>
 
-   
+   <!-- FILTER SIDEBAR -->
+    {% if cl.has_filters %}
+    <div class="w-64 flex-shrink-0">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 sticky top-20">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
+                    {% trans 'Filter' %}
+                </h3>
+            </div>
+            <div class="p-4 space-y-4">
+                {% for spec in cl.filter_specs %}
+                <div>
+                    <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
+                        {{ spec.title }}
+                    </h4>
+                    <ul class="space-y-1">
+                        {% for choice in spec.choices %}
+                        <li>
+                            <a href="{{ choice.query_string }}" 
+                               class="block px-2 py-1 text-sm rounded transition-colors {% if choice.selected %}bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium{% else %}text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}">
+                                {{ choice.display }}
+                            </a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
 
 </div>
 {% endblock %}
