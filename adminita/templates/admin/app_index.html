@@ -1,0 +1,63 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block content_title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% if app_list %}
+        {% for app in app_list %}
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-md transition-shadow">
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+                    {{ app.name }}
+                </h2>
+            </div>
+            
+            <div class="p-4">
+                <ul class="space-y-2">
+                    {% for model in app.models %}
+                    <li>
+                        <a href="{{ model.admin_url }}" class="group flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400">
+                                {{ model.name }}
+                            </span>
+                            <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </a>
+                        
+                        {% if model.add_url or model.admin_url %}
+                        <div class="ml-3 mt-1 flex items-center space-x-4 text-xs">
+                            {% if model.add_url %}
+                            <a href="{{ model.add_url }}" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                + {% trans 'Add' %}
+                            </a>
+                            {% endif %}
+                            
+                            {% if model.admin_url %}
+                            <a href="{{ model.admin_url }}" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                {% trans 'Change' %}
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-span-full">
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 text-center">
+                <p class="text-gray-600 dark:text-gray-400">
+                    {% trans "You don't have permission to view or edit anything." %}
+                </p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -296,7 +296,7 @@ We welcome contributions! Adminita is an open-source project and we'd love your 
 
 We especially need help with:
 
-- 🐛 **Dark Mode Bug** - The toggle isn't working (see [Known Issues](#-known-issues))
+- 🐛 **Dark Mode Bug** - The toggle isn't working (UPDATE: This now works as of December 21 2025)
 - 📱 **Mobile Responsiveness** - Testing on various devices
 - ♿ **Accessibility** - ARIA labels, keyboard navigation, screen reader support
 - 🎨 **Additional Themes** - Creating alternative color schemes

@@ -1,0 +1,98 @@
+{% extends "admin/base.html" %}
+{% load i18n admin_urls static %}
+
+{% block content_title %}
+    {% blocktrans with escaped_object=object %}Delete {{ escaped_object }}{% endblocktrans %}
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl">
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        
+        <!-- Warning Header -->
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-red-50 dark:bg-red-900/20">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 text-red-600 dark:text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                </svg>
+                <h2 class="text-lg font-semibold text-red-800 dark:text-red-200">
+                    {% blocktrans with escaped_object=object %}Are you sure you want to delete "{{ escaped_object }}"?{% endblocktrans %}
+                </h2>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <p class="text-gray-700 dark:text-gray-300 mb-4">
+                {% blocktrans %}All of the following related items will be deleted:{% endblocktrans %}
+            </p>
+            
+            <!-- Deleted Objects Summary -->
+            {% if deleted_objects %}
+            <div class="bg-gray-50 dark:bg-gray-750 rounded-lg p-4 mb-6">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">{% trans "Summary" %}</h3>
+                <ul class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
+                    {% for deleted_object in deleted_objects %}
+                    <li class="flex items-center">
+                        <svg class="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        {{ deleted_object }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            {% if perms_lacking %}
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                    {% blocktrans %}Deleting the {{ object_name }} would require deleting the following protected related objects:{% endblocktrans %}
+                </p>
+                <ul class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+                    {% for obj in perms_lacking %}
+                    <li>{{ obj }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            {% if protected %}
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 mb-6">
+                <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                    {% blocktrans %}Deleting the {{ object_name }} would result in deleting related objects, but your account doesn't have permission to delete the following types of objects:{% endblocktrans %}
+                </p>
+                <ul class="mt-2 text-sm text-yellow-700 dark:text-yellow-300">
+                    {% for obj in protected %}
+                    <li>{{ obj }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            <!-- Action Buttons -->
+            {% if perms_lacking or protected %}
+            <div class="flex items-center justify-end">
+                <a href="{{ opts|admin_urlname:'changelist'|admin_urlquote }}" class="inline-flex items-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors">
+                    {% trans "Go back" %}
+                </a>
+            </div>
+            {% else %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="flex items-center justify-end space-x-3">
+                    <a href="{% url opts|admin_urlname:'changelist' %}" class="inline-flex items-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors">
+                        {% trans "No, take me back" %}
+                    </a>
+                    <button type="submit" class="inline-flex items-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                        </svg>
+                        {% trans "Yes, I'm sure" %}
+                    </button>
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -68,7 +68,7 @@
             {% csrf_token %}
             
             <!-- Actions Bar -->
-            {% if cl.result_count and actions %}
+            {% if action_form and cl.show_admin_actions %}
             <div class="actions px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
                 <label class="text-sm text-gray-700 dark:text-gray-300">{% trans "Action:" %}</label>
                 <select name="action" class="text-sm">
