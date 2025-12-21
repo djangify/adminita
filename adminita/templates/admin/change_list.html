@@ -64,6 +64,28 @@
             </div>
 
             <!-- Results -->
+            <form id="changelist-form" method="post">
+            {% csrf_token %}
+            
+            <!-- Actions Bar -->
+            {% if cl.result_count and actions %}
+            <div class="actions px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
+                <label class="text-sm text-gray-700 dark:text-gray-300">{% trans "Action:" %}</label>
+                <select name="action" class="text-sm">
+                    <option value="">---------</option>
+                    {% for action in action_form.fields.action.choices %}
+                        {% if action.0 %}
+                        <option value="{{ action.0 }}">{{ action.1 }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <button type="submit" name="index" value="0" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
+                    {% trans "Go" %}
+                </button>
+                <span class="text-sm text-gray-500 dark:text-gray-400">{% blocktrans with cl.result_count as count %}{{ count }} selected{% endblocktrans %}</span>
+            </div>
+            {% endif %}
+            
             <div class="overflow-x-auto">
                 {% block result_list %}
                 {% if cl.result_count %}
@@ -81,6 +103,7 @@
                 {% endif %}
                 {% endblock %}
             </div>
+            </form>
 
             <!-- Pagination -->
             {% if cl.result_count %}
@@ -145,21 +168,7 @@
             </div>
             <div class="p-4 space-y-4">
                 {% for spec in cl.filter_specs %}
-                <div>
-                    <h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                        {{ spec.title }}
-                    </h4>
-                    <ul class="space-y-1">
-                        {% for choice in spec.choices %}
-                        <li>
-                            <a href="{{ choice.query_string }}" 
-                               class="block px-2 py-1 text-sm rounded transition-colors {% if choice.selected %}bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium{% else %}text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700{% endif %}">
-                                {{ choice.display }}
-                            </a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                    {% admin_list_filter cl spec %}
                 {% endfor %}
             </div>
         </div>

@@ -2,6 +2,9 @@
 
 @import "tailwindcss";
 
+/* Enable class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
 /* Theme customization for Adminita */
 @theme {
   /* Primary colors - Blue theme for admin */
