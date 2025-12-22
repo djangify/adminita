@@ -11,7 +11,27 @@
 
 
 {% block content %}
-<form method="post" id="{{ opts.model_name }}_form" enctype="multipart/form-data" class="space-y-6">
+    <!-- Object Tools (History, View on Site) -->
+    {% if change and not is_popup %}
+    <div class="mb-6 flex items-center justify-end space-x-3">
+        <a href="{% url opts|admin_urlname:'history' original.pk|admin_urlquote %}" class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium text-sm transition-colors">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            {% trans 'History' %}
+        </a>
+        {% if has_absolute_url %}
+        <a href="{{ absolute_url }}" class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg font-medium text-sm transition-colors" target="_blank">
+            {% trans 'View on site' %}
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <form method="post" id="{{ opts.model_name }}_form" enctype="multipart/form-data" class="space-y-6">
     {% csrf_token %}
     
     {% if errors %}
