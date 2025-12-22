@@ -236,27 +236,7 @@ adminita/
 ```
 
 ## 🐛 Known Issues
-
-### Dark Mode Not Working
-
-**Status**: Open Issue  
-**Priority**: High
-
-The dark mode toggle button appears in the interface, but clicking it does not switch between light and dark themes. This is a known bug that we're actively working on.
-
-**Expected Behavior**: Clicking the moon/sun icon should toggle between light and dark mode, with the preference saved to localStorage.
-
-**Current Behavior**: Nothing happens when the toggle button is clicked.
-
-**Workaround**: None currently available.
-
-**Help Wanted**: If you have experience with JavaScript and dark mode implementation, we'd love your help! See [Contributing](#-contributing) below.
-
-### Adding Filter Sidebar 
-
-~~Wanted to include a filter section on the side but kept clashing with Django files. Need to pay more time to it to get it working~~
-
-**Status**: Still experimenting
+None not as of December 2025
 
 ## 📚 Documentation
 
@@ -342,13 +322,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **GitHub**: https://github.com/djangify/adminita
 - **Issues**: https://github.com/djangify/adminita/issues
-- **PyPI**: https://pypi.org/project/adminita/ (coming soon)
+- **PyPI**: https://pypi.org/project/adminita/ 
+
+- **Website - GitHub**: https://github.com/djangify/adminita_demo
+
+- **Website**: https://adminita.todiane.com (demo user login available)
+
 
 ## 💬 Support
 
 Having trouble? Here are some ways to get help:
 
-- 📖 Check the [documentation](https://github.com/djangify/adminita/wiki)
+- 📖 Check the [documentation](https://adminita.todiane.com/infopages/docs)
 - 🐛 [Open an issue](https://github.com/djangify/adminita/issues/new)
 - 💡 [Start a discussion](https://github.com/djangify/adminita/discussions)
 
