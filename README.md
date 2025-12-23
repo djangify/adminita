@@ -358,3 +358,9 @@ If you find Adminita useful, please consider giving it a star on GitHub! It help
 Made with ❤️ by a Django enthusiast
 
 **Note**: This is an open-source project. I appreciate your patience and contributions!
+
+**Developer**: https://www.todiane.com 
+
+**Developer LinkedIn**: https://linkedin.com/in/todianedev
+
+**Coffee Always Welcome**: https://ko-fi.com/todianedev ❤️

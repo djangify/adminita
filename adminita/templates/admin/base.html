@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="{% static 'adminita/adminita-tailwind.css' %}">
     <script src="{% static 'adminita/adminita-tailwind.js' %}" defer></script>
     <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
+    <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
   
   </head>
     {% block dark_mode_vars %}
@@ -108,8 +111,14 @@
                     {% if user.is_active and user.is_staff %}
                     <div class="flex items-center space-x-3 text-sm">
                         <span class="text-gray-700 dark:text-gray-300 hidden sm:inline">
-                            {% trans 'Welcome,' %} <strong>{{ user.get_username }}</strong>
+                            {% trans 'Welcome,' %} <strong>{% firstof user.get_short_name user.first_name "back" %}</strong>
                         </span>
+                        {% if site_url %}
+                        <a href="{{ site_url }}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
+                            {% trans 'View site' %}
+                        </a>
+                        <span class="text-gray-400 hidden sm:inline">/</span>
+                        {% endif %}
                         <a href="{% url 'admin:password_change' %}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
                             {% trans 'Change password' %}
                         </a>
@@ -123,8 +132,8 @@
                     </div>
                     {% endif %}
                     {% endblock %}
-                </div>
-            </header>
+                    </div>
+                </header>
             {% endblock %}
             
             <!-- Main Content Area with Max Width Container -->
