@@ -210,9 +210,9 @@ adminita/
 ├── adminita/                  # The Django app package
 │   ├── static/
 │   │   ├── css/
-│   │   │   └── output.css    # Generated CSS (don't edit)
+│   │   │   └── adminita-tailwind.css    # Generated CSS (don't edit)
 │   │   ├── js/
-│   │   │   └── admin.js      # JavaScript for dark mode & mobile menu
+│   │   │   └── adminita-tailwind.js      # JavaScript for dark mode & mobile menu
 │   │   └── src/
 │   │       └── input.css     # Source CSS with Tailwind v4 syntax
 │   ├── templates/

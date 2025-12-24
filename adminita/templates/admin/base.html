@@ -5,14 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
-    
     <link rel="stylesheet" href="{% static 'adminita/adminita-tailwind.css' %}">
     <script src="{% static 'adminita/adminita-tailwind.js' %}" defer></script>
     <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
-    <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
-    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
-  
   </head>
     {% block dark_mode_vars %}
     <script>
@@ -177,7 +172,14 @@
     </div>
     
     
-
-    {% block extrajs %}{% endblock %}
+{% block extrajs %}
+  {{ block.super }}
+  <script src="{% url 'admin:jsi18n' %}"></script>
+  <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+  <script src="{% static 'admin/js/core.js' %}"></script>
+  <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+{% endblock %}
+    
 </body>
 </html>

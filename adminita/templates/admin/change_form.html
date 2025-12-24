@@ -60,32 +60,30 @@
     {% block field_sets %}
     {% for fieldset in adminform %}
 
-    <div class="{% if not forloop.first %}border-t border-gray-200 dark:border-gray-700{% endif %}">
+    <fieldset class="module {% if fieldset.is_collapsible %}collapse{% endif %} {% if not forloop.first %}border-t border-gray-200 dark:border-gray-700{% endif %}">
 
-        {% if fieldset.name %}
-        <div class="px-6 py-4 bg-gray-50 dark:bg-gray-750">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-            {{ fieldset.name }}
-        </h2>
+    {% if fieldset.name %}
+    <h2 class="px-6 py-4 bg-gray-50 dark:bg-gray-750 text-lg font-semibold text-gray-900 dark:text-white">
+        {{ fieldset.name }}
+    </h2>
 
-        {% if fieldset.description %}
-        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ fieldset.description|safe }}
-        </p>
-        {% endif %}
-        </div>
-        {% endif %}
+    {% if fieldset.description %}
+    <p class="px-6 mt-1 text-sm text-gray-600 dark:text-gray-400">
+        {{ fieldset.description|safe }}
+    </p>
+    {% endif %}
+    {% endif %}
 
-        <div class="px-6 py-6 space-y-6">
+    <div class="form-row px-6 py-6 space-y-6">
 
         {% for line in fieldset %}
         <div class="{% if line.fields|length > 1 %}grid grid-cols-1 md:grid-cols-{{ line.fields|length }} gap-6{% endif %}">
 
-            {% for field in line %}
-            <div class="{% if field.is_readonly %}opacity-75{% endif %}">
+        {% for field in line %}
+        <div class="{% if field.is_readonly %}opacity-75{% endif %}">
 
             <label for="{{ field.field.id_for_label }}"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                 {{ field.field.label }}
                 {% if field.field.field.required %}
                 <span class="text-red-600 dark:text-red-400">*</span>
@@ -93,9 +91,9 @@
             </label>
 
             {% if field.is_readonly %}
-                <div class="px-3 py-2 bg-gray-50 dark:bg-gray-750 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100">
+            <div class="px-3 py-2 bg-gray-50 dark:bg-gray-750 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100">
                 {{ field.field }}
-                </div>
+            </div>
             {% else %}
                 {{ field.field }}
             {% endif %}
@@ -112,16 +110,17 @@
             </div>
             {% endif %}
 
-            </div>
-            {% endfor %}
-
         </div>
         {% endfor %}
 
         </div>
+        {% endfor %}
+
     </div>
+    </fieldset>
 
     {% endfor %}
+
     {% endblock %}
 
     </div>
@@ -186,9 +185,6 @@
 
 {% block extrajs %}
     {{ block.super }}
-    <script src="{% url 'admin:jsi18n' %}"></script>
-    <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
     <script src="{% static 'admin/js/urlify.js' %}"></script>
     <script src="{% static 'admin/js/prepopulate.js' %}"></script>
     {{ media.js }}
