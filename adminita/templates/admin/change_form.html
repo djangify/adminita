@@ -1,5 +1,8 @@
-{% extends "admin/base.html" %}
+{% extends "admin/change_form.html" %}
 {% load i18n admin_urls static admin_modify %}
+{% block breadcrumbs %}
+
+{% endblock %}
 
 {% block content_title %}
     {% if add %}
@@ -21,7 +24,7 @@
             {% trans 'History' %}
         </a>
         {% if has_absolute_url %}
-        <a href="{{ absolute_url }}" class="inline-flex items-center px-4 py-2  bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors" target="_blank">
+        <a href="{{ absolute_url }}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium text-sm transition-colors" target="_blank">
             {% trans 'View on site' %}
             <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
@@ -168,39 +171,12 @@
     {% endfor %}
     {% endblock %}
     
-    <!-- Submit Buttons -->
-    <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-800 px-6 py-4 rounded-lg border border-gray-200 dark:border-gray-700">
-        <div class="flex items-center space-x-3">
-            <button type="submit" name="_save" class="inline-flex items-center px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                {% trans 'Save' %}
-            </button>
-            
-            {% if show_save_and_add_another %}
-            <button type="submit" name="_addanother" class="inline-flex items-center px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors">
-                {% trans 'Save and add another' %}
-            </button>
-            {% endif %}
-            
-            {% if show_save_and_continue %}
-            <button type="submit" name="_continue" class="inline-flex items-center px-4 py-2.5 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-medium transition-colors">
-                {% trans 'Save and continue editing' %}
-            </button>
-            {% endif %}
-        </div>
-        
-        <div class="flex items-center space-x-3">
-            {% if show_delete_link %}
-            <a href="{% url opts|admin_urlname:'delete' original.pk|admin_urlquote %}" class="inline-flex items-center px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
-                {% trans 'Delete' %}
-            </a>
-            {% endif %}
-            
-            <a href="{% url opts|admin_urlname:'changelist' %}" class="inline-flex items-center px-4 py-2.5 border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium transition-colors">
-                {% trans 'Cancel' %}
-            </a>
-        </div>
-    </div>
-</form>
+    <!-- Submit Buttons - Include the submit_line template -->
+    {% block submit_buttons_bottom %}
+    {% include "admin/submit_line.html" %}
+    {% endblock %}
+    
+    </form>
 {% endblock %}
 
 {% block extrastyle %}

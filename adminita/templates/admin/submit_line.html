@@ -1,0 +1,22 @@
+{% load i18n admin_urls %}
+
+<div class="flex items-center justify-between bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 px-4 py-2">
+    <div class="flex items-center space-x-3">
+        {# Always show these three main buttons #}
+        <input type="submit" value="{% translate 'Save' %}" name="_save" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors cursor-pointer">
+        
+        <input type="submit" value="{% translate 'Save and add another' %}" name="_addanother" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors cursor-pointer">
+        
+        <input type="submit" value="{% translate 'Save and continue editing' %}" name="_continue" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors cursor-pointer">
+    </div>
+    
+    <div class="flex items-center space-x-3">
+        {# Delete link - only show if we have an original object #}
+        {% if original %}
+        {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
+        <a href="{% add_preserved_filters delete_url %}" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+            {% translate "Delete" %}
+        </a>
+        {% endif %}
+    </div>
+</div>

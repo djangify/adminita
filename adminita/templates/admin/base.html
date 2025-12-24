@@ -37,7 +37,7 @@
             
             {% block branding %}
             <div class="h-16 px-6 flex items-center justify-between border-b border-gray-200 dark:border-gray-700">
-                <a href="{% url 'admin:index' %}" class="text-sm font-normal text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
+                <a href="{% url 'admin:index' %}" class="text-md font-semibold text-gray-900 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                     {{ site_header|default:_('Django administration') }}
                 </a>
             </div>
@@ -47,9 +47,9 @@
             
             <nav class="px-4 py-6 overflow-y-auto h-[calc(100vh-4rem)]">
                 {% block sidebar_content %}
-                {% if app_list %}
+                {% if available_apps %}
                     <div class="space-y-6">
-                        {% for app in app_list %}
+                        {% for app in available_apps %}
                         <div>
                             <h3 class="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                                 {{ app.name }}
@@ -78,66 +78,67 @@
         <div class="flex-1 flex flex-col md:ml-64 transition-all duration-300" id="main-content">
             
             <!-- Top Bar -->
-            {% block header %}
-            <header class="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 sticky top-0 z-20">
-                
-                <div class="flex items-center space-x-4">
-                    <!-- Mobile menu button - hidden on desktop -->
-                    <button id="sidebar-toggle" type="button" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors md:hidden">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        </svg>
-                    </button>
+            <div class="min-h-[8rem]">
+                {% block header %}
+                <header class="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-6 sticky top-0 z-20">
                     
-                    {% block page_title %}
-                    <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
-                        {% block content_title %}{% endblock %}
-                    </h1>
-                    {% endblock %}
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <!-- Dark mode toggle -->
-                    <button id="dark-mode-toggle" type="button" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Toggle dark mode">
-                        <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
-                        </svg>
-                        <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
-                        </svg>
-                    </button>
+                    <div class="flex items-center space-x-4">
+                        <!-- Mobile menu button - hidden on desktop -->
+                        <button id="sidebar-toggle" type="button" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors md:hidden">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            </svg>
+                        </button>
+                        
+                        {% block page_title %}
+                        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+                            {% block content_title %}{% endblock %}
+                        </h1>
+                        {% endblock %}
+                    </div>
                     
-                    {% block usertools %}
-                    {% if user.is_active and user.is_staff %}
-                    <div class="flex items-center space-x-3 text-sm">
-                        <span class="text-gray-700 dark:text-gray-300 hidden sm:inline">
-                            {% trans 'Welcome,' %} <strong>{% firstof user.get_short_name user.first_name "back" %}</strong>
-                        </span>
-                        {% if site_url %}
-                        <a href="{{ site_url }}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
-                            {% trans 'View site' %}
-                        </a>
-                        <span class="text-gray-400 hidden sm:inline">/</span>
+                    <div class="flex items-center space-x-4">
+                        <!-- Dark mode toggle -->
+                        <button id="dark-mode-toggle" type="button" class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Toggle dark mode">
+                            <svg class="w-5 h-5 hidden dark:block" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/>
+                            </svg>
+                            <svg class="w-5 h-5 block dark:hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/>
+                            </svg>
+                        </button>
+                        
+                        {% block usertools %}
+                        {% if user.is_active and user.is_staff %}
+                        <div class="flex items-center space-x-3 text-sm">
+                            <span class="text-gray-700 dark:text-gray-300 hidden sm:inline">
+                                {% trans 'Welcome,' %} <strong>{% firstof user.get_short_name user.first_name "back" %}</strong>
+                            </span>
+                            {% if site_url %}
+                            <a href="{{ site_url }}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
+                                {% trans 'View site' %}
+                            </a>
+                            <span class="text-gray-400 hidden sm:inline">/</span>
+                            {% endif %}
+                            <a href="{% url 'admin:password_change' %}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
+                                {% trans 'Change password' %}
+                            </a>
+                            <span class="text-gray-400 hidden sm:inline">/</span>
+                            <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <button type="submit" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors bg-transparent border-0 cursor-pointer">
+                                    {% trans 'Log out' %}
+                                </button>
+                            </form>
+                        </div>
                         {% endif %}
-                        <a href="{% url 'admin:password_change' %}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
-                            {% trans 'Change password' %}
-                        </a>
-                        <span class="text-gray-400 hidden sm:inline">/</span>
-                        <form method="post" action="{% url 'admin:logout' %}" style="display: inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors bg-transparent border-0 cursor-pointer">
-                                {% trans 'Log out' %}
-                            </button>
-                        </form>
-                    </div>
-                    {% endif %}
-                    {% endblock %}
-                    </div>
-                </header>
-            {% endblock %}
-            
+                        {% endblock %}
+                        </div>
+                    </header>
+                {% endblock %}
+            </div>
             <!-- Main Content Area with Max Width Container -->
-            <main class="flex-1 p-6">
+            <main class="flex-1 p-6  pt-16">
                 <!-- Container with max-width to prevent super-wide content -->
                 <div class="max-w-7xl mx-auto">
                     {% block messages %}

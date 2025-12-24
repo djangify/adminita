@@ -370,4 +370,36 @@
     content: " ▼";
     @apply text-xs;
   }
+
+  /* INLINE FORMS */
+  .inline-related input[type="text"],
+  .inline-related input[type="number"],
+  .inline-related input[type="url"],
+  .inline-related input[type="email"],
+  .inline-related select,
+  .inline-related textarea {
+    @apply w-full px-3 py-2 text-sm bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 dark:text-white;
+  }
+
+  .inline-related input[type="checkbox"] {
+    @apply w-4 h-4 text-primary-600 bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 rounded focus:ring-primary-500;
+  }
+
+  .collapse-icon.rotate-180 {
+    transform: rotate(180deg);
+  }
+
+  .empty-form {
+    display: none;
+  }
+
+  .inline-related.marked-for-deletion {
+    opacity: 0.5;
+    background-color: rgb(254 242 242) !important;
+  }
+
+  .dark .inline-related.marked-for-deletion {
+    background-color: rgb(127 29 29 / 0.3) !important;
+  }
+
 }
