@@ -26,7 +26,7 @@
 
     {# Inline Forms #}
     {% for inline_admin_form in inline_admin_formset %}
-    <div class="inline-related {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %} {% if forloop.last and inline_admin_formset.has_add_permission %}empty-form last-related{% endif %}"
+    <div class="inline-related {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form last-related{% endif %}"
          id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
       
       {# Collapsible Header for each inline item #}
@@ -34,12 +34,12 @@
            onclick="toggleInlineCollapse(this)">
         <div class="flex items-center gap-3">
           {# Collapse Arrow Icon #}
-          <svg class="collapse-icon w-4 h-4 text-gray-500 dark:text-gray-400 transform transition-transform duration-200 {% if 'collapse' in inline_admin_formset.classes %}rotate-180{% endif %}" 
+          <svg class="collapse-icon w-4 h-4 text-gray-500 dark:text-gray-400 transform transition-transform duration-200" 
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
           
-          <h3 class="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <h3 class="inline-label text-sm font-medium text-gray-700 dark:text-gray-300">
             {% if inline_admin_form.original %}
               {{ inline_admin_form.original }}
             {% else %}
@@ -62,14 +62,13 @@
         
         {# Delete Checkbox - Always Visible in Header #}
         {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}
-        <div class="delete-checkbox flex items-center gap-2" onclick="event.stopPropagation();">
+        <div class="inline-deletelink flex items-center gap-2" onclick="event.stopPropagation();">
           <label class="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-300">
             <input type="checkbox" 
                    name="{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE" 
                    id="id_{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE"
                    class="w-4 h-4 text-red-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-red-500 focus:ring-2">
             <span>{% translate "Delete" %}</span>
-            {# X Icon #}
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
             </svg>
@@ -79,8 +78,7 @@
       </div>
       
       {# Collapsible Content #}
-      <div class="inline-content px-4 py-4 border-t border-gray-100 dark:border-gray-600 {% if 'collapse' in inline_admin_formset.classes %}collapsed{% endif %}"
-     {% if 'collapse' in inline_admin_formset.classes %}style="display: none;"{% endif %}>
+      <div class="inline-content px-4 py-4 border-t border-gray-100 dark:border-gray-600">
         
         {# Form Errors #}
         {% if inline_admin_form.form.non_field_errors %}
@@ -114,7 +112,7 @@
           {% endif %}
           
           {% for line in fieldset %}
-          <div class="form-row {% if line.fields|length == 1 %}single-field{% else %}multi-field grid grid-cols-1 md:grid-cols-{{ line.fields|length }} gap-4{% endif %} {% if line.errors %}errors{% endif %} mb-4">
+          <div class="form-row {% if line.fields|length == 1 %}single-field{% else %}multi-field grid grid-cols-1 md:grid-cols-{{ line.fields|length }} gap-4{% endif %}{% if line.errors %} errors{% endif %} mb-4">
             {% for field in line %}
               {% if not field.field.is_hidden %}
               <div class="field-box {% if field.field.name %}field-{{ field.field.name }}{% endif %}">
@@ -159,20 +157,60 @@
     </div>
     {% endfor %}
     
-    {# Add Another Row Button #}
-    {% if inline_admin_formset.has_add_permission %}
-    <div class="add-row px-4 py-3 border-t border-gray-200 dark:border-gray-700">
-      <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        {% blocktranslate with verbose_name=inline_admin_formset.opts.verbose_name %}Add another {{ verbose_name }}{% endblocktranslate %}
-      </a>
-    </div>
-    {% endif %}
-    
   </fieldset>
+  
+  {# Add Another Row - Outside fieldset, Django's inlines.js will handle this #}
+   {# Django's inlines.js will create the add-row dynamically #}
+  
 </div>
+
+<style>
+  /* Style the add-row link to look like a simple link, not a button */
+    .add-row {
+    background: transparent;
+    border: none;
+    padding-left: 1rem;
+  }
+  /* Hide duplicate add-row links created by Django's inlines.js */
+  .inline-group .add-row ~ .add-row {
+    display: none !important;
+  }
+  .add-row a,
+  .add-row a:link,
+  .add-row a:visited {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #2563eb;
+    text-decoration: none;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  .add-row a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+  .add-row a::before {
+    content: "+";
+    font-size: 1.25rem;
+    font-weight: 400;
+  }
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .add-row a,
+    .add-row a:link,
+    .add-row a:visited {
+      color: #60a5fa;
+    }
+    .add-row a:hover {
+      color: #93c5fd;
+    }
+  }
+</style>
 
 <script>
 function toggleInlineCollapse(header) {
@@ -181,11 +219,11 @@ function toggleInlineCollapse(header) {
   
   if (content.style.display === 'none') {
     content.style.display = 'block';
-    icon.classList.add('rotate-180');
+    icon.classList.remove('rotate-180');
     content.classList.remove('collapsed');
   } else {
     content.style.display = 'none';
-    icon.classList.remove('rotate-180');
+    icon.classList.add('rotate-180');
     content.classList.add('collapsed');
   }
 }

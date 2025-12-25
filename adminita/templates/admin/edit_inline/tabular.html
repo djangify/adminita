@@ -54,10 +54,10 @@
         
         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
           {% for inline_admin_form in inline_admin_formset %}
-          <tr class="form-row {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %} {% if forloop.last and inline_admin_formset.has_add_permission %}empty-form{% endif %} hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+          <tr class="form-row {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form{% endif %} hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
               id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
             
-            <td class="px-3 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+            <td class="original px-3 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
               {% if inline_admin_form.original %}
                 <span class="inline-flex items-center justify-center w-6 h-6 text-xs font-medium bg-gray-200 dark:bg-gray-600 rounded-full">
                   {{ forloop.counter }}
@@ -103,7 +103,7 @@
             {% endfor %}
             
             {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission %}
-            <td class="px-3 py-3 text-center">
+            <td class="delete px-3 py-3 text-center">
               {% if inline_admin_form.original %}
               <label class="sr-only" for="id_{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE">
                 {% translate "Delete" %}
@@ -124,16 +124,53 @@
       </table>
     </div>
     
-    {% if inline_admin_formset.has_add_permission %}
-    <div class="add-row px-4 py-3 bg-gray-50 dark:bg-gray-750 border-t border-gray-200 dark:border-gray-700">
-      <a href="#" class="inline-flex items-center gap-2 text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-        </svg>
-        {% blocktranslate with verbose_name=inline_admin_formset.opts.verbose_name %}Add another {{ verbose_name }}{% endblocktranslate %}
-      </a>
-    </div>
-    {% endif %}
-    
   </fieldset>
+  
+  {# Add Another Row - Outside fieldset for proper JS handling #}
+   {# Django's inlines.js will create the add-row dynamically #}
+  
 </div>
+
+<style>
+  /* Style the add-row link to look like a simple link, not a button */
+  .add-row {
+    background: transparent;
+    border: none;
+  }
+  .add-row a,
+  .add-row a:link,
+  .add-row a:visited {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #2563eb;
+    text-decoration: none;
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+  }
+  .add-row a:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+  .add-row a::before {
+    content: "+";
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-right: 0.25rem;
+  }
+  /* Dark mode */
+  @media (prefers-color-scheme: dark) {
+    .add-row a,
+    .add-row a:link,
+    .add-row a:visited {
+      color: #60a5fa;
+    }
+    .add-row a:hover {
+      color: #93c5fd;
+    }
+  }
+</style>
