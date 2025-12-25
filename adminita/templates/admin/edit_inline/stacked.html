@@ -34,7 +34,7 @@
            onclick="toggleInlineCollapse(this)">
         <div class="flex items-center gap-3">
           {# Collapse Arrow Icon #}
-          <svg class="collapse-icon w-4 h-4 text-gray-500 dark:text-gray-400 transform transition-transform duration-200" 
+          <svg class="collapse-icon w-4 h-4 text-gray-500 dark:text-gray-400 transform transition-transform duration-200 {% if 'collapse' in inline_admin_formset.classes %}rotate-180{% endif %}" 
                fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
@@ -61,7 +61,7 @@
         </div>
         
         {# Delete Checkbox - Always Visible in Header #}
-        {% if inline_admin_form.has_delete_permission and inline_admin_form.original %}
+        {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}
         <div class="delete-checkbox flex items-center gap-2" onclick="event.stopPropagation();">
           <label class="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-300">
             <input type="checkbox" 
@@ -79,8 +79,8 @@
       </div>
       
       {# Collapsible Content #}
-      <div class="inline-content px-4 py-4 border-t border-gray-100 dark:border-gray-600 {% if inline_admin_form.original %}collapsed{% endif %}"
-           {% if inline_admin_form.original %}style="display: none;"{% endif %}>
+      <div class="inline-content px-4 py-4 border-t border-gray-100 dark:border-gray-600 {% if 'collapse' in inline_admin_formset.classes %}collapsed{% endif %}"
+     {% if 'collapse' in inline_admin_formset.classes %}style="display: none;"{% endif %}>
         
         {# Form Errors #}
         {% if inline_admin_form.form.non_field_errors %}
