@@ -402,9 +402,5 @@
     background-color: rgb(127 29 29 / 0.3) !important;
   }
 
-  .add-row {
-    background: transparent;
-    border: none;
-    padding-left: 1rem;
-  }
+
 }

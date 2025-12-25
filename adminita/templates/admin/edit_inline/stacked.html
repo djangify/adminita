@@ -1,230 +1,135 @@
 {% load i18n admin_urls static %}
-<div class="js-inline-admin-formset inline-group"
+<div class="js-inline-admin-formset inline-group dark:bg-gray-800"
      id="{{ inline_admin_formset.formset.prefix }}-group"
      data-inline-type="stacked"
      data-inline-formset="{{ inline_admin_formset.inline_formset_data }}">
-  
-  <fieldset class="module {{ inline_admin_formset.classes }} bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
-    
-    {# Section Header #}
-    <h2 class="text-lg font-semibold text-gray-900 dark:text-white px-4 py-3 bg-gray-50 dark:bg-gray-750 border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
-      {% if inline_admin_formset.formset.max_num == 1 %}
-        {{ inline_admin_formset.opts.verbose_name|capfirst }}
-      {% else %}
-        {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
-      {% endif %}
-    </h2>
-    
-    {{ inline_admin_formset.formset.management_form }}
-    
-    {# Non-form errors #}
-    {% if inline_admin_formset.formset.non_form_errors %}
-    <div class="px-4 py-2 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 text-sm">
-      {{ inline_admin_formset.formset.non_form_errors }}
-    </div>
-    {% endif %}
 
-    {# Inline Forms #}
-    {% for inline_admin_form in inline_admin_formset %}
-    <div class="inline-related {% if inline_admin_form.original or inline_admin_form.show_url %}has_original{% endif %}{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form last-related{% endif %}"
-         id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
-      
-      {# Collapsible Header for each inline item #}
-      <div class="inline-header flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 cursor-pointer hover:bg-gray-150 dark:hover:bg-gray-650 transition-colors"
-           onclick="toggleInlineCollapse(this)">
-        <div class="flex items-center gap-3">
-          {# Collapse Arrow Icon #}
-          <svg class="collapse-icon w-4 h-4 text-gray-500 dark:text-gray-400 transform transition-transform duration-200" 
-               fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-          
-          <h3 class="inline-label text-sm font-medium text-gray-700 dark:text-gray-300">
-            {% if inline_admin_form.original %}
-              {{ inline_admin_form.original }}
-            {% else %}
-              {{ inline_admin_formset.opts.verbose_name|capfirst }}
-              {% if not forloop.last or not inline_admin_formset.has_add_permission %}
-                #{{ forloop.counter }}
-              {% endif %}
-            {% endif %}
-          </h3>
-          
-          {# View on site link #}
-          {% if inline_admin_form.show_url %}
-          <a href="{{ inline_admin_form.absolute_url }}" 
-             class="text-xs text-primary-600 dark:text-primary-400 hover:underline"
-             onclick="event.stopPropagation();">
-            {% translate "View on site" %}
-          </a>
-          {% endif %}
-        </div>
-        
-        {# Delete Checkbox - Always Visible in Header #}
-        {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}
-        <div class="inline-deletelink flex items-center gap-2" onclick="event.stopPropagation();">
-          <label class="flex items-center gap-2 text-sm text-red-600 dark:text-red-400 cursor-pointer hover:text-red-700 dark:hover:text-red-300">
-            <input type="checkbox" 
-                   name="{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE" 
-                   id="id_{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE"
-                   class="w-4 h-4 text-red-600 bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-red-500 focus:ring-2">
-            <span>{% translate "Delete" %}</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </label>
-        </div>
-        {% endif %}
-      </div>
-      
-      {# Collapsible Content #}
-      <div class="inline-content px-4 py-4 border-t border-gray-100 dark:border-gray-600">
-        
-        {# Form Errors #}
-        {% if inline_admin_form.form.non_field_errors %}
-        <div class="mb-4 p-3 bg-red-50 dark:bg-red-900/20 rounded-md">
-          {{ inline_admin_form.form.non_field_errors }}
-        </div>
-        {% endif %}
-        
-        {# Hidden Fields #}
-        {% for fieldset in inline_admin_form %}
-          {% for line in fieldset %}
-            {% for field in line %}
-              {% if field.field.is_hidden %}
-                {{ field.field }}
-              {% endif %}
-            {% endfor %}
-          {% endfor %}
-        {% endfor %}
-        
-        {# Fieldsets #}
-        {% for fieldset in inline_admin_form %}
-        <fieldset class="{% if fieldset.classes %}{{ fieldset.classes }}{% endif %} mb-4">
-          {% if fieldset.name %}
-          <h4 class="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2 pb-2 border-b border-gray-100 dark:border-gray-700">
-            {{ fieldset.name }}
-          </h4>
-          {% endif %}
-          
-          {% if fieldset.description %}
-          <p class="text-xs text-gray-500 dark:text-gray-500 mb-3">{{ fieldset.description|safe }}</p>
-          {% endif %}
-          
-          {% for line in fieldset %}
-          <div class="form-row {% if line.fields|length == 1 %}single-field{% else %}multi-field grid grid-cols-1 md:grid-cols-{{ line.fields|length }} gap-4{% endif %}{% if line.errors %} errors{% endif %} mb-4">
-            {% for field in line %}
-              {% if not field.field.is_hidden %}
-              <div class="field-box {% if field.field.name %}field-{{ field.field.name }}{% endif %}">
-                {% if field.is_checkbox %}
-                <div class="flex items-center gap-2">
-                  {{ field.field }}
-                  <label for="{{ field.field.id_for_label }}" class="text-sm text-gray-700 dark:text-gray-300">
-                    {{ field.field.label }}
-                  </label>
-                </div>
-                {% else %}
-                <label for="{{ field.field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  {{ field.field.label }}
-                  {% if field.field.field.required %}<span class="text-red-500">*</span>{% endif %}
-                </label>
-                {{ field.field }}
-                {% endif %}
-                
-                {% if field.field.errors %}
-                <div class="mt-1 text-sm text-red-600 dark:text-red-400">{{ field.field.errors }}</div>
-                {% endif %}
-                
-                {% if field.field.help_text %}
-                <p class="mt-1 text-xs text-gray-500 dark:text-gray-500">{{ field.field.help_text|safe }}</p>
-                {% endif %}
-              </div>
-              {% endif %}
-            {% endfor %}
-          </div>
-          {% endfor %}
-        </fieldset>
-        {% endfor %}
-        
-        {# FK Widget if present #}
-        {% if inline_admin_form.needs_explicit_pk_field %}
-          {{ inline_admin_form.pk_field.field }}
-        {% endif %}
-        {% if inline_admin_form.fk_field %}
-          {{ inline_admin_form.fk_field.field }}
-        {% endif %}
-      </div>
-    </div>
-    {% endfor %}
+<fieldset class="module bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6">
+  
+  <h2 class="text-lg font-semibold text-gray-900 dark:text-white px-4 py-3 bg-gray-50 dark:bg-gray-750 border-b border-gray-200 dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
+      onclick="toggleInlineSection(this)">
+    <svg class="section-collapse-icon w-4 h-4 text-gray-500 transform transition-transform duration-200" 
+         fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+    </svg>
+    {{ inline_admin_formset.opts.verbose_name_plural|capfirst }}
+  </h2>
+  
+  {{ inline_admin_formset.formset.management_form }}
+
+  {% for inline_admin_form in inline_admin_formset %}
+  <div class="inline-related{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form{% endif %}"
+       id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
     
-  </fieldset>
-  
-  {# Add Another Row - Outside fieldset, Django's inlines.js will handle this #}
-   {# Django's inlines.js will create the add-row dynamically #}
-  
+    <div class="inline-header flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-700 border-t border-gray-200 cursor-pointer"
+         onclick="toggleInlineCollapse(this)">
+      <div class="flex items-center gap-3">
+        <svg class="collapse-icon w-4 h-4 text-gray-500 transform transition-transform duration-200" 
+             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+        <h3 class="inline-label text-sm font-medium text-gray-700 dark:text-gray-300">
+          {{ inline_admin_form.original|default:"New item" }}
+        </h3>
+      </div>
+      
+      {% comment %} {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}
+      <div onclick="event.stopPropagation();">
+        <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
+          <input type="checkbox" 
+                 name="{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE" 
+                 id="id_{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE"
+                 class="w-4 h-4 text-red-600 rounded">
+          <span>Delete</span>
+        </label>
+      </div>
+      {% endif %} {% endcomment %}
+    </div>
+    
+    <div class="inline-content px-4 py-4">
+      {% for fieldset in inline_admin_form %}
+        {% for line in fieldset %}
+          {% for field in line %}
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                {{ field.field.label }}
+              </label>
+              {{ field.field }}
+            </div>
+          {% endfor %}
+        {% endfor %}
+      {% endfor %}
+    </div>
+    
+  </div>
+  {% endfor %}
+
+</fieldset>
 </div>
 
 <style>
-  /* Style the add-row link to look like a simple link, not a button */
-    .add-row {
-    background: transparent;
-    border: none;
-    padding-left: 1rem;
-  }
-  /* Hide duplicate add-row links created by Django's inlines.js */
-  .inline-group .add-row ~ .add-row {
-    display: none !important;
-  }
-  .add-row a,
-  .add-row a:link,
-  .add-row a:visited {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #2563eb;
-    text-decoration: none;
-    background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-  }
-  .add-row a:hover {
-    color: #1d4ed8;
-    text-decoration: underline;
-  }
-  .add-row a::before {
-    content: "+";
-    font-size: 1.25rem;
-    font-weight: 400;
-  }
-  /* Dark mode */
-  @media (prefers-color-scheme: dark) {
-    .add-row a,
-    .add-row a:link,
-    .add-row a:visited {
-      color: #60a5fa;
-    }
-    .add-row a:hover {
-      color: #93c5fd;
-    }
-  }
+.add-row {
+  background: transparent;
+  border: none;
+  padding-left: 1rem;
+}
+.inline-related .delete {
+  display: none !important;
+}
+.add-row a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: none;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+}
+.add-row a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+.add-row a::before {
+  content: "+";
+  font-size: 1.25rem;
+  margin-right: 0.25rem;
+}
+.inline-group .add-row ~ .add-row {
+  display: none !important;
+}
 </style>
 
 <script>
 function toggleInlineCollapse(header) {
-  const content = header.nextElementSibling;
-  const icon = header.querySelector('.collapse-icon');
+  var content = header.nextElementSibling;
+  var icon = header.querySelector('.collapse-icon');
   
   if (content.style.display === 'none') {
     content.style.display = 'block';
     icon.classList.remove('rotate-180');
-    content.classList.remove('collapsed');
   } else {
     content.style.display = 'none';
     icon.classList.add('rotate-180');
-    content.classList.add('collapsed');
   }
+  
+}
+function toggleInlineSection(header) {
+  var fieldset = header.closest('fieldset');
+  var content = fieldset.querySelectorAll('.inline-related, .add-row');
+  var icon = header.querySelector('.section-collapse-icon');
+  
+  content.forEach(function(el) {
+    if (el.style.display === 'none') {
+      el.style.display = '';
+      icon.classList.remove('rotate-180');
+    } else {
+      el.style.display = 'none';
+      icon.classList.add('rotate-180');
+    }
+  });
 }
 </script>
