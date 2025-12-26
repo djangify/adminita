@@ -21,9 +21,8 @@
   <div class="inline-related{% if forloop.last and inline_admin_formset.has_add_permission %} empty-form{% endif %}"
        id="{{ inline_admin_formset.formset.prefix }}-{% if forloop.last and inline_admin_formset.has_add_permission %}empty{% else %}{{ forloop.counter0 }}{% endif %}">
     
-    <div class="inline-header flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-700 border-t border-gray-200 cursor-pointer"
-         onclick="toggleInlineCollapse(this)">
-      <div class="flex items-center gap-3">
+    <div class="inline-header flex items-center justify-between px-4 py-3 bg-gray-100 dark:bg-gray-700 border-t border-gray-200">
+      <div class="flex items-center gap-3 cursor-pointer flex-1" onclick="toggleInlineCollapse(this.parentElement)">
         <svg class="collapse-icon w-4 h-4 text-gray-500 transform transition-transform duration-200 rotate-180" 
              fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -32,7 +31,12 @@
           {{ inline_admin_form.original|default:"New item" }}
         </h3>
       </div>
-      
+      {% if inline_admin_formset.formset.can_delete and inline_admin_form.original %}
+      <label class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-red-600 cursor-pointer">
+        {{ inline_admin_form.form.DELETE }}
+        <span>Delete</span>
+      </label>
+      {% endif %}
     </div>
     
     <div class="inline-content px-4 py-4" style="display: none;">
@@ -40,10 +44,7 @@
       {% if inline_admin_form.pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
       {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
       
-      {# Delete field - required even if hidden #}
-      {% if inline_admin_formset.formset.can_delete and inline_admin_form.original %}
-        <input type="hidden" name="{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE" value="">
-      {% endif %}
+      
       
       {# Form errors #}
       {% if inline_admin_form.form.non_field_errors %}
@@ -79,7 +80,8 @@
   border: none;
   padding-left: 1rem;
 }
-.inline-related .delete {
+.inline-related .delete,
+.inline-deletelink {
   display: none !important;
 }
 .add-row a {
@@ -121,8 +123,8 @@ function toggleInlineCollapse(header) {
     content.style.display = 'none';
     icon.classList.add('rotate-180');
   }
-  
 }
+
 function toggleInlineSection(header) {
   var fieldset = header.closest('fieldset');
   var content = fieldset.querySelectorAll('.inline-related, .add-row');
@@ -138,4 +140,5 @@ function toggleInlineSection(header) {
     }
   });
 }
+
 </script>
