@@ -1,0 +1,25 @@
+{% load i18n static %}<!DOCTYPE html>
+<html>
+<head>
+    <title>{% trans "Popup closing…" %}</title>
+</head>
+<body>
+<script type="application/json" id="django-admin-popup-response-constants">{{ popup_response_data }}</script>
+<script type="text/javascript">
+    (function() {
+        var initData = JSON.parse(document.getElementById("django-admin-popup-response-constants").textContent);
+        switch(initData.action) {
+            case 'change':
+                opener.dismissChangeRelatedObjectPopup(window, initData.value, initData.obj, initData.new_value);
+                break;
+            case 'delete':
+                opener.dismissDeleteRelatedObjectPopup(window, initData.value);
+                break;
+            default:
+                opener.dismissAddRelatedObjectPopup(window, initData.value, initData.obj);
+                break;
+        }
+    })();
+</script>
+</body>
+</html>

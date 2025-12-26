@@ -35,6 +35,8 @@
 
     <form method="post" id="{{ opts.model_name }}_form" enctype="multipart/form-data" class="space-y-6">
     {% csrf_token %}
+    {% if is_popup %}<input type="hidden" name="_popup" value="1">{% endif %}
+    {% if to_field %}<input type="hidden" name="_to_field" value="{{ to_field }}">{% endif %}
     
     {# Form Errors #}
     {% if errors %}
@@ -149,6 +151,7 @@
     <script src="{% static 'admin/js/prepopulate.js' %}"></script>
     <script src="{% static 'admin/js/vendor/xregexp/xregexp.min.js' %}"></script>
     <script src="{% static 'admin/js/inlines.js' %}"></script>
+    <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
     {{ media.js }}
     {% if add %}{% prepopulated_fields_js %}{% endif %}
     
