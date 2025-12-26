@@ -169,5 +169,24 @@
             icon.classList.add('-rotate-90');
         }
     }
+    
+    // Auto-expand fieldsets that contain validation errors
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('fieldset.module').forEach(function(fieldset) {
+            // Check if this fieldset contains any error messages
+            const hasErrors = fieldset.querySelector('.text-red-600, .text-red-400, .errorlist');
+            if (hasErrors) {
+                const content = fieldset.querySelector('.fieldset-content');
+                const description = fieldset.querySelector('.fieldset-description');
+                const icon = fieldset.querySelector('.collapse-icon');
+                
+                if (content && content.classList.contains('hidden')) {
+                    content.classList.remove('hidden');
+                    if (description) description.classList.remove('hidden');
+                    if (icon) icon.classList.remove('-rotate-90');
+                }
+            }
+        });
+    });
     </script>
 {% endblock %}
