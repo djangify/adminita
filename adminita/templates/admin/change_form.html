@@ -63,7 +63,7 @@
             {# Collapsible Header #}
             <h2 class="fieldset-header flex items-center gap-2 px-6 py-4 bg-gray-50 dark:bg-gray-750 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 onclick="toggleFieldset(this)">
-                <svg class="collapse-icon w-4 h-4 text-gray-500 transform transition-transform duration-200{% if 'collapse' in fieldset.classes %} -rotate-90{% endif %}" 
+                <svg class="collapse-icon w-4 h-4 text-gray-500 transform transition-transform duration-200 -rotate-90" 
                      fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                 </svg>
@@ -72,14 +72,14 @@
                 </span>
             </h2>
             {% if fieldset.description %}
-            <p class="fieldset-description px-6 pb-2 text-sm text-gray-600 dark:text-gray-400{% if 'collapse' in fieldset.classes %} hidden{% endif %}">
+            <p class="fieldset-description px-6 pb-2 text-sm text-gray-600 dark:text-gray-400 hidden">
                 {{ fieldset.description|safe }}
             </p>
             {% endif %}
             {% endif %}
             
             {# Fieldset Content #}
-            <div class="fieldset-content px-6 py-6 space-y-6{% if 'collapse' in fieldset.classes %} hidden{% endif %}">
+            <div class="fieldset-content px-6 py-6 space-y-6{% if fieldset.name %} hidden{% endif %}">
                 {% for line in fieldset %}
                 <div class="{% if line.fields|length > 1 %}grid grid-cols-1 md:grid-cols-{{ line.fields|length }} gap-6{% endif %}">
                     {% for field in line %}
