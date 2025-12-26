@@ -83,18 +83,18 @@
                 {% for field in line %}
                   {% if not field.field.is_hidden %}
                   <td class="px-3 py-3 {% if field.field.name %}field-{{ field.field.name }}{% endif %}">
-                    {% if field.field.errors %}
-                    <div class="text-red-500 text-xs mb-1">{{ field.field.errors }}</div>
-                    {% endif %}
-                    
-                    {{ field.field }}
-                    
                     {% if field.is_readonly %}
+                      <div class="readonly-field text-gray-900 dark:text-gray-100">{{ field.contents }}</div>
                       {% if inline_admin_form.show_url %}
                       <a href="{{ inline_admin_form.absolute_url }}" class="text-xs text-primary-600 dark:text-primary-400 hover:underline ml-2">
                         {% translate "View" %}
                       </a>
                       {% endif %}
+                    {% else %}
+                      {% if field.field.errors %}
+                      <div class="text-red-500 text-xs mb-1">{{ field.field.errors }}</div>
+                      {% endif %}
+                      {{ field.field }}
                     {% endif %}
                   </td>
                   {% endif %}

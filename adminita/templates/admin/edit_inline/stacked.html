@@ -54,15 +54,22 @@
       {% for fieldset in inline_admin_form %}
         {% for line in fieldset %}
           {% for field in line %}
+            {% if not field.field.is_hidden %}
             <div class="mb-4">
               <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 {{ field.field.label }}
+                {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
               </label>
-              {{ field.field }}
-              {% if field.field.errors %}
-              <div class="text-red-600 text-sm mt-1">{{ field.field.errors }}</div>
+              {% if field.is_readonly %}
+                <div class="readonly-field text-gray-900 dark:text-gray-100 py-2">{{ field.contents }}</div>
+              {% else %}
+                {{ field.field }}
+                {% if field.field.errors %}
+                <div class="text-red-600 text-sm mt-1">{{ field.field.errors }}</div>
+                {% endif %}
               {% endif %}
             </div>
+            {% endif %}
           {% endfor %}
         {% endfor %}
       {% endfor %}
