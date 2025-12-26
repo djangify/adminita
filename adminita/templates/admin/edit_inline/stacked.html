@@ -33,20 +33,23 @@
         </h3>
       </div>
       
-      {% comment %} {% if inline_admin_formset.formset.can_delete and inline_admin_formset.has_delete_permission and inline_admin_form.original %}
-      <div onclick="event.stopPropagation();">
-        <label class="flex items-center gap-2 text-sm text-red-600 cursor-pointer">
-          <input type="checkbox" 
-                 name="{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE" 
-                 id="id_{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE"
-                 class="w-4 h-4 text-red-600 rounded">
-          <span>Delete</span>
-        </label>
-      </div>
-      {% endif %} {% endcomment %}
     </div>
     
     <div class="inline-content px-4 py-4">
+      {# Hidden fields - CRITICAL for saving #}
+      {% if inline_admin_form.pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
+      {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
+      
+      {# Delete field - required even if hidden #}
+      {% if inline_admin_formset.formset.can_delete and inline_admin_form.original %}
+        <input type="hidden" name="{{ inline_admin_formset.formset.prefix }}-{{ forloop.counter0 }}-DELETE" value="">
+      {% endif %}
+      
+      {# Form errors #}
+      {% if inline_admin_form.form.non_field_errors %}
+      <div class="text-red-600 text-sm mb-4">{{ inline_admin_form.form.non_field_errors }}</div>
+      {% endif %}
+      
       {% for fieldset in inline_admin_form %}
         {% for line in fieldset %}
           {% for field in line %}
@@ -55,6 +58,9 @@
                 {{ field.field.label }}
               </label>
               {{ field.field }}
+              {% if field.field.errors %}
+              <div class="text-red-600 text-sm mt-1">{{ field.field.errors }}</div>
+              {% endif %}
             </div>
           {% endfor %}
         {% endfor %}
