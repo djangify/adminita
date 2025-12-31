@@ -64,9 +64,9 @@
             </div>
 
             <!-- Results -->
-            <form id="changelist-form" method="post">
+            <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %}>
             {% csrf_token %}
-            
+            {% if cl.formset %}{{ cl.formset.management_form }}{% endif %}
             <!-- Actions Bar -->
             {% if action_form and cl.show_admin_actions %}
             <div class="actions px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
@@ -103,6 +103,15 @@
                 {% endif %}
                 {% endblock %}
             </div>
+                <!-- Save Button for list_editable -->
+                {% if cl.formset and cl.result_count %}
+                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end">
+                    <input type="submit" 
+                        name="_save" 
+                        value="{% translate 'Save' %}" 
+                        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors cursor-pointer">
+                </div>
+                {% endif %}
             </form>
 
             <!-- Pagination -->

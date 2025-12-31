@@ -155,12 +155,27 @@
 
   #result_list tbody td {
     @apply px-4 py-3 text-sm text-gray-900 dark:text-gray-100;
-    text-align: left !important;
+
   }
 
   #result_list tbody td a {
     @apply text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 no-underline;
   }
+
+  /* Force admin title column to be left-aligned */
+  #result_list tbody th,
+  #result_list tbody th.field-title,
+  #result_list tbody th a {
+    text-align: left !important;
+    justify-content: flex-start !important;
+  }
+
+  #result_list tbody th a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start !important;
+  }
+
 
   /* Action checkboxes column */
   #result_list .action-checkbox {
