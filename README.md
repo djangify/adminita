@@ -16,7 +16,7 @@ A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform you
 
 - 🎨 **Modern UI** - Clean, professional interface built with Tailwind CSS v4
 - 🌓 **Dark Mode** - System preference detection with manual toggle
-- 📱 **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+- 📱 **Responsive Design** - Works seamlessly on desktop and tablet. Is mobile friendly
 - 🎯 **Easy Integration** - Drop-in replacement for Django's default admin
 - ⚡ **Fast** - Optimized CSS with no unnecessary bloat
 - 🔧 **Customizable** - Easy to customize colors and styling
