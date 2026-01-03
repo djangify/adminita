@@ -236,7 +236,38 @@ adminita/
 ```
 
 ## 🐛 Known Issues
-None not as of December 2025
+
+## Issue: Search and filters break after zero-result state
+
+### Symptoms
+- Search returns correct results
+- Filters work initially
+- After any action that returns zero results, filters stop working
+- JavaScript error: `undefined is not iterable` in actions.js
+
+### Root cause
+Django's admin/js/actions.js expects specific DOM elements that may not exist 
+when the result set is empty, causing a JavaScript crash that breaks subsequent 
+page functionality.
+
+### Workaround
+Disable admin actions or add error handling for the zero-result state.
+
+## Known Limitations
+These changes make Adminita usable on mobile, not optimized for mobile:
+
+- Complex tables - Very wide tables still require horizontal scrolling
+- Inline formsets - Tabular inlines are cramped; consider using stacked inlines for mobile-heavy use cases
+- Rich text editors - TinyMCE and similar may have their own mobile issues
+- Date/time pickers - Django's default widgets are desktop-focused
+
+## Future Improvements (Community PRs Welcome)
+
+ - Card-based table view option for mobile (instead of horizontal scroll)
+ - Bottom navigation bar for common actions
+ - Pull-to-refresh on list pages
+ - Improved inline formset mobile layout
+ - Native date/time inputs on mobile (<input type="date">)
 
 ## 📚 Documentation
 
