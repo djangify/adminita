@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div class="filter-group mb-4">
+    <details class="group" open>
+        <summary class="flex items-center justify-between cursor-pointer py-2 text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors list-none">
+            <span>{{ title }}</span>
+            <svg class="w-4 h-4 text-gray-500 transform transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+        </summary>
+        <ul class="mt-2 space-y-1">
+            {% for choice in choices %}
+            <li>
+                {% if choice.selected %}
+                <span class="block py-1.5 px-2 text-sm rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 font-medium">
+                    {{ choice.display }}
+                </span>
+                {% else %}
+                <a href="{{ choice.query_string }}"
+                   class="block py-1.5 px-2 text-sm rounded text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-gray-200 transition-colors">
+                    {{ choice.display }}
+                </a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+    </details>
+</div>

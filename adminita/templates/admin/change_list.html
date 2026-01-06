@@ -12,168 +12,118 @@
 {% block extrastyle %}
     {{ block.super }}
     {{ media.css }}
-   
 {% endblock %}
 
 {% block content %}
-<div class="flex gap-6">
+<div id="changelist" class="module flex gap-6">
     
     <!-- MAIN CONTENT AREA -->
     <div class="flex-1">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
 
-            <!-- Toolbar -->
+            <!-- Toolbar: Search + Add -->
             <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex flex-wrap items-center justify-between gap-4">
-
-                <!-- Search -->
-                <div class="flex-1 min-w-[300px]">
-                    {% block search %}
-                    {% if cl.search_fields %}
-                    <form id="changelist-search" method="get" class="flex items-center space-x-2">
-                        <div class="relative flex-1">
-                            <input type="search"
-                                   name="{{ search_var }}"
-                                   value="{{ cl.query }}"
-                                   placeholder="{% trans 'Search' %}"
-                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                            </svg>
-                        </div>
-                        <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                            {% trans 'Search' %}
-                        </button>
-                    </form>
-                    {% endif %}
-                    {% endblock %}
-                </div>
-
-                <!-- Actions -->
-                <div class="flex items-center space-x-3">
-                    {% block object-tools %}
-                    {% if has_add_permission %}
-                    <a href="{% url cl.opts|admin_urlname:'add' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
-                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                {% block search %}
+                {% if cl.search_fields %}
+                <form id="changelist-search" method="get" class="flex items-center space-x-2 flex-1 min-w-[300px]">
+                    <div class="relative flex-1">
+                        <input type="search"
+                               name="q"
+                               value="{{ cl.query }}"
+                               placeholder="{% trans 'Search' %}"
+                               class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                         </svg>
-                        {% trans 'Add' %} {{ cl.opts.verbose_name }}
-                    </a>
-                    {% endif %}
-                    {% endblock %}
-                </div>
-            </div>
-
-            <!-- Results -->
-            <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %}>
-            {% csrf_token %}
-            {% if cl.formset %}{{ cl.formset.management_form }}{% endif %}
-            <!-- Actions Bar -->
-            {% if action_form and cl.show_admin_actions %}
-            <div class="actions px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex items-center gap-3">
-                <label class="text-sm text-gray-700 dark:text-gray-300">{% trans "Action:" %}</label>
-                <select name="action" class="text-sm">
-                    <option value="">---------</option>
-                    {% for action in action_form.fields.action.choices %}
-                        {% if action.0 %}
-                        <option value="{{ action.0 }}">{{ action.1 }}</option>
+                    </div>
+                    {% for key, value in cl.params.items %}
+                        {% if key != 'q' and key != 'p' %}
+                        <input type="hidden" name="{{ key }}" value="{{ value }}">
                         {% endif %}
                     {% endfor %}
-                </select>
-                <button type="submit" name="index" value="0" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors">
-                    {% trans "Go" %}
-                </button>
-                <span class="text-sm text-gray-500 dark:text-gray-400">{% blocktrans with cl.result_count as count %}{{ count }} selected{% endblocktrans %}</span>
-            </div>
-            {% endif %}
-            
-            <div class="overflow-x-auto">
-                {% block result_list %}
-                {% if cl.result_count %}
-                    {% result_list cl %}
-                {% else %}
-                <div class="px-6 py-12 text-center">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                        {% trans 'Search' %}
+                    </button>
+                </form>
+                {% endif %}
+                {% endblock %}
+
+                {% block object-tools %}
+                {% if has_add_permission %}
+                <a href="{% url cl.opts|admin_urlname:'add' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                     </svg>
-                    <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                        {% trans 'No results found' %}
-                    </p>
-                </div>
+                    {% trans 'Add' %} {{ cl.opts.verbose_name }}
+                </a>
                 {% endif %}
                 {% endblock %}
             </div>
-                <!-- Save Button for list_editable -->
+
+            {# Simple form WITHOUT actions - just for list_editable save #}
+            <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>
+                {% csrf_token %}
+                {% if cl.formset %}{{ cl.formset.management_form }}{% endif %}
+
+                {# Results #}
+                <div id="result_list" class="overflow-x-auto">
+                    {% if cl.result_count %}
+                        {% result_list cl %}
+                    {% else %}
+                        <div class="p-12 text-center">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 2a10 10 0 100 20 10 10 0 000-20z"/>
+                            </svg>
+                            <p class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">{% trans 'No results found' %}</p>
+                            {% if cl.query %}<p class="mt-2 text-sm text-gray-500">{% blocktrans with query=cl.query %}No matches for "{{ query }}"{% endblocktrans %}</p>{% endif %}
+                            <a href="?" class="mt-4 inline-flex items-center text-sm text-blue-600 hover:underline">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                {% trans 'Clear all filters' %}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                {# Save for list_editable #}
                 {% if cl.formset and cl.result_count %}
-                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-end">
-                    <input type="submit" 
-                        name="_save" 
-                        value="{% translate 'Save' %}" 
-                        class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors cursor-pointer">
+                <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                    <input type="submit" name="_save" value="{% translate 'Save' %}" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium cursor-pointer">
                 </div>
                 {% endif %}
             </form>
 
-            <!-- Pagination -->
+            {# Pagination #}
+            {% block pagination %}
             {% if cl.result_count %}
             <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
-                <div class="text-sm text-gray-700 dark:text-gray-300">
-                    {% if cl.result_count == 1 %}
-                        1 {{ cl.opts.verbose_name }}
-                    {% else %}
-                        {{ cl.result_count }} {{ cl.opts.verbose_name_plural }}
+                <span class="text-sm text-gray-700 dark:text-gray-300">
+                    {{ cl.result_count }} {{ cl.opts.verbose_name_plural }}
+                </span>
+                {% if cl.multi_page %}
+                <nav class="flex items-center space-x-1">
+                    {% if cl.page_num > 0 %}
+                    <a href="?{% for k,v in cl.params.items %}{% if k != 'p' %}{{ k }}={{ v }}&{% endif %}{% endfor %}p={{ cl.page_num|add:'-1' }}" class="px-3 py-1 text-sm border rounded hover:bg-gray-50 dark:hover:bg-gray-700">{% trans 'Previous' %}</a>
                     {% endif %}
-                </div>
-
-                {% block pagination %}
-                {% if cl.can_show_all or cl.multi_page %}
-                <div class="flex items-center space-x-2">
-                    {% if cl.can_show_all %}
-                    <a href="?{% if cl.is_popup %}_popup=1&{% endif %}all="
-                       class="px-3 py-1 text-sm text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                        {% trans 'Show all' %}
-                    </a>
+                    <span class="px-3 py-1 text-sm">{% blocktrans with page=cl.page_num|add:1 pages=cl.paginator.num_pages %}{{ page }}/{{ pages }}{% endblocktrans %}</span>
+                    {% if cl.page_num < cl.paginator.num_pages|add:"-1" %}
+                    <a href="?{% for k,v in cl.params.items %}{% if k != 'p' %}{{ k }}={{ v }}&{% endif %}{% endfor %}p={{ cl.page_num|add:1 }}" class="px-3 py-1 text-sm border rounded hover:bg-gray-50 dark:hover:bg-gray-700">{% trans 'Next' %}</a>
                     {% endif %}
-
-                    {% if cl.multi_page %}
-                    <nav class="flex items-center space-x-1">
-                        {% if cl.page_num > 0 %}
-                        <a href="?p={{ cl.page_num|add:'-1' }}"
-                           class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            {% trans 'Previous' %}
-                        </a>
-                        {% endif %}
-
-                        <span class="px-3 py-1 text-sm text-gray-700 dark:text-gray-300">
-                            {% blocktrans with page_num=cl.page_num|add:1 num_pages=cl.paginator.num_pages %}
-                                Page {{ page_num }} of {{ num_pages }}
-                            {% endblocktrans %}
-                        </span>
-
-                        {% if cl.page_num < cl.paginator.num_pages|add:"-1" %}
-                        <a href="?p={{ cl.page_num|add:1 }}"
-                           class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                            {% trans 'Next' %}
-                        </a>
-                        {% endif %}
-                    </nav>
-                    {% endif %}
-                </div>
+                </nav>
                 {% endif %}
-                {% endblock %}
             </div>
             {% endif %}
+            {% endblock %}
         </div>
     </div>
 
-   <!-- FILTER SIDEBAR -->
+    {# FILTER SIDEBAR #}
+    {% block filters %}
     {% if cl.has_filters %}
-    <div class="w-64 flex-shrink-0">
+    <aside class="w-64 flex-shrink-0" id="changelist-filter">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 sticky top-20">
-            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
-                <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">
-                    {% trans 'Filter' %}
-                </h3>
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750 flex items-center justify-between">
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider">{% trans 'Filter' %}</h3>
+                <a href="?" class="text-xs text-blue-600 dark:text-blue-400 hover:underline">{% trans 'Clear' %}</a>
             </div>
             <div class="p-4 space-y-4">
                 {% for spec in cl.filter_specs %}
@@ -181,13 +131,15 @@
                 {% endfor %}
             </div>
         </div>
-    </div>
+    </aside>
     {% endif %}
+    {% endblock %}
 
 </div>
 {% endblock %}
 
 {% block extrajs %}
-    {{ block.super }}
-    {{ media.js }}
+{{ block.super }}
+{# Intentionally NOT including media.js to avoid actions.js errors #}
+{# {{ media.js }} #}
 {% endblock %}
