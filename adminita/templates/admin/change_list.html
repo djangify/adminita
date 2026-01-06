@@ -12,6 +12,172 @@
 {% block extrastyle %}
     {{ block.super }}
     {{ media.css }}
+    <style>
+        /* Actions bar styling for Adminita */
+        #changelist-form .actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid rgb(229, 231, 235);
+            background-color: rgb(249, 250, 251);
+        }
+        .dark #changelist-form .actions {
+            border-color: rgb(55, 65, 81);
+            background-color: rgb(31, 41, 55);
+        }
+        #changelist-form .actions label {
+            font-size: 0.875rem;
+            color: rgb(55, 65, 81);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .dark #changelist-form .actions label {
+            color: rgb(209, 213, 219);
+        }
+        #changelist-form .actions select {
+            padding: 0.5rem 2rem 0.5rem 0.75rem;
+            border: 1px solid rgb(209, 213, 219);
+            border-radius: 0.5rem;
+            background-color: white;
+            font-size: 0.875rem;
+            color: rgb(17, 24, 39);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.5rem center;
+            background-repeat: no-repeat;
+            background-size: 1.25rem;
+        }
+        .dark #changelist-form .actions select {
+            border-color: rgb(75, 85, 99);
+            background-color: rgb(55, 65, 81);
+            color: rgb(243, 244, 246);
+        }
+        #changelist-form .actions select:focus {
+            outline: none;
+            border-color: rgb(59, 130, 246);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+        }
+        #changelist-form .actions button {
+            padding: 0.5rem 1rem;
+            background-color: rgb(75, 85, 99);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.15s;
+        }
+        #changelist-form .actions button:hover {
+            background-color: rgb(55, 65, 81);
+        }
+        #changelist-form .actions .action-counter {
+            font-size: 0.875rem;
+            color: rgb(107, 114, 128);
+            margin-left: 0.5rem;
+        }
+        .dark #changelist-form .actions .action-counter {
+            color: rgb(156, 163, 175);
+        }
+        #changelist-form .actions span.all,
+        #changelist-form .actions span.clear {
+            font-size: 0.875rem;
+            color: rgb(59, 130, 246);
+            cursor: pointer;
+            margin-left: 0.25rem;
+        }
+        #changelist-form .actions span.all:hover,
+        #changelist-form .actions span.clear:hover {
+            text-decoration: underline;
+        }
+        #changelist-form .actions span.question {
+            font-size: 0.875rem;
+            color: rgb(107, 114, 128);
+            margin-left: 0.5rem;
+        }
+        #changelist-form .actions span.question a {
+            color: rgb(59, 130, 246);
+        }
+        .dark #changelist-form .actions span.question {
+            color: rgb(156, 163, 175);
+        }
+        .hidden { display: none !important; }
+        
+        /* Table styling */
+        #result_list table td {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.875rem;
+            color: rgb(55, 65, 81);
+            vertical-align: middle;
+        }
+        .dark #result_list table td {
+            color: rgb(209, 213, 219);
+        }
+        #result_list table td a {
+            color: rgb(37, 99, 235);
+            text-decoration: none;
+        }
+        #result_list table td a:hover {
+            text-decoration: underline;
+        }
+        .dark #result_list table td a {
+            color: rgb(96, 165, 250);
+        }
+        
+        /* Checkbox column styling */
+        .action-checkbox-column {
+            width: 2rem;
+            padding: 0.75rem 1rem !important;
+        }
+        td.action-checkbox {
+            padding: 0.75rem 1rem !important;
+            width: 2rem;
+        }
+        
+        /* Checkbox styling */
+        #action-toggle,
+        .action-select {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.25rem;
+            border: 1px solid rgb(209, 213, 219);
+            background-color: white;
+            cursor: pointer;
+            accent-color: rgb(59, 130, 246);
+        }
+        .dark #action-toggle,
+        .dark .action-select {
+            border-color: rgb(75, 85, 99);
+            background-color: rgb(55, 65, 81);
+        }
+        #action-toggle:checked,
+        .action-select:checked {
+            background-color: rgb(59, 130, 246);
+            border-color: rgb(59, 130, 246);
+        }
+        
+        /* Selected row highlight */
+        tr.selected {
+            background-color: rgb(239, 246, 255) !important;
+        }
+        .dark tr.selected {
+            background-color: rgba(59, 130, 246, 0.1) !important;
+        }
+        
+        /* Field-specific styling (list_display fields) */
+        td[class^="field-"] {
+            white-space: nowrap;
+        }
+        
+        /* Boolean field icons */
+        td img[alt="True"], td img[alt="False"] {
+            width: 1rem;
+            height: 1rem;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
@@ -60,9 +226,15 @@
                 {% endblock %}
             </div>
 
-            {# Simple form WITHOUT actions - just for list_editable save #}
-            <form id="changelist-form" method="post"{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>
+            <!-- Main Form: Actions + Results + Save -->
+            <form id="changelist-form" method="post" action=""{% if cl.formset and cl.formset.is_multipart %} enctype="multipart/form-data"{% endif %} novalidate>
                 {% csrf_token %}
+                
+                <!-- Actions Bar - Using Django's built-in template tag -->
+                {% if action_form and actions_on_top %}
+                    {% admin_actions %}
+                {% endif %}
+
                 {% if cl.formset %}{{ cl.formset.management_form }}{% endif %}
 
                 {# Results #}
@@ -83,6 +255,11 @@
                         </div>
                     {% endif %}
                 </div>
+
+                {# Actions at bottom too - standard Django behavior #}
+                {% if action_form and actions_on_bottom %}
+                    {% admin_actions %}
+                {% endif %}
 
                 {# Save for list_editable #}
                 {% if cl.formset and cl.result_count %}
@@ -139,7 +316,6 @@
 {% endblock %}
 
 {% block extrajs %}
-{{ block.super }}
-{# Intentionally NOT including media.js to avoid actions.js errors #}
-{# {{ media.js }} #}
+    {{ block.super }}
+    {{ media.js }}
 {% endblock %}

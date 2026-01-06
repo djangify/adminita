@@ -1,0 +1,22 @@
+{% load i18n %}
+
+<div class="actions flex items-center gap-3 px-6 py-3 bg-gray-50 dark:bg-gray-750 border-b border-gray-200 dark:border-gray-700">
+    {% for field in action_form %}
+        {% if field.label %}
+            <label class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                {{ field.label }}
+                {{ field }}
+            </label>
+        {% else %}
+            {{ field }}
+        {% endif %}
+    {% endfor %}
+    
+    <button type="submit" 
+            class="px-3 py-1.5 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-md transition-colors" 
+            title="{% translate 'Run the selected action' %}" 
+            name="index" 
+            value="{{ action_index|default:0 }}">
+        {% translate "Go" %}
+    </button>
+</div>
