@@ -29,7 +29,7 @@ A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform you
 ![adminita light dashboard](https://github.com/djangify/adminita/blob/ac1e111dcf7ffae28dcdca60a78dbf32c848d035/adminita-lightdashboard.png)
 
 ### Dark Mode
-![Dark Mode Dashboard - IMAGE COMING SOON - once I fix it!]
+![Dark Mode Dashboard](https://github.com/djangify/adminita/blob/93e527055807d5e6e05b2fa5724f97835ee53232/adminita-dark-mode.png)
 
 ## 🚀 Quick Start
 
