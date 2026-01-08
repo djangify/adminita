@@ -419,3 +419,50 @@
 
 
 }
+
+/* ================================================
+   FIELDSET LABEL STYLING
+   Style Django's default label_tag output
+   ================================================ */
+
+/* Style labels rendered by Django's label_tag */
+fieldset.module label {
+  @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
+}
+
+/* Inline labels (for multi-field rows) */
+fieldset.module label.inline {
+  @apply inline-block mr-2;
+}
+
+/* Required field indicator */
+fieldset.module label .required {
+  @apply text-red-600 dark:text-red-400;
+}
+
+/* ================================================
+   DATE PICKER CALENDAR FIX FOR DARK MODE
+   ================================================ */
+.calendarbox,
+.calendarnav-previous,
+.calendarnav-next,
+.calendar caption,
+.calendar td,
+.calendar th {
+  color: #1f2937 !important;
+}
+
+.calendar td a {
+  color: #1f2937 !important;
+}
+
+.calendar td a:hover {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+/* Calendar shortcut links (Yesterday, Today, Tomorrow, Cancel) */
+.calendar-shortcuts a,
+.calendar-cancel a {
+  color: #3b82f6 !important;
+}

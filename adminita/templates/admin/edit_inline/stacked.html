@@ -1,4 +1,4 @@
-{% load i18n admin_urls static %}
+{% load i18n admin_urls static adminita_tags %}
 <div class="js-inline-admin-formset inline-group dark:bg-gray-800"
      id="{{ inline_admin_formset.formset.prefix }}-group"
      data-inline-type="stacked"
@@ -44,8 +44,6 @@
       {% if inline_admin_form.pk_field %}{{ inline_admin_form.pk_field.field }}{% endif %}
       {% if inline_admin_form.fk_field %}{{ inline_admin_form.fk_field.field }}{% endif %}
       
-      
-      
       {# Form errors #}
       {% if inline_admin_form.form.non_field_errors %}
       <div class="text-red-600 text-sm mb-4">{{ inline_admin_form.form.non_field_errors }}</div>
@@ -61,7 +59,7 @@
                 {% if field.field.required %}<span class="text-red-500">*</span>{% endif %}
               </label>
               {% if field.is_readonly %}
-                <div class="readonly-field text-gray-900 dark:text-gray-100 py-2">{{ field.contents }}</div>
+                <div class="readonly-field text-gray-900 dark:text-gray-100 py-2">{{ field|safe_contents }}</div>
               {% else %}
                 {{ field.field }}
                 {% if field.field.errors %}

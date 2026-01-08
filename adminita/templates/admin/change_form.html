@@ -57,65 +57,7 @@
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         {% block field_sets %}
         {% for fieldset in adminform %}
-        <fieldset class="module {% if fieldset.classes %}{{ fieldset.classes }}{% endif %}{% if not forloop.first %} border-t border-gray-200 dark:border-gray-700{% endif %}">
-            
-            {% if fieldset.name %}
-            {# Collapsible Header #}
-            <h2 class="fieldset-header flex items-center gap-2 px-6 py-4 bg-gray-50 dark:bg-gray-750 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                onclick="toggleFieldset(this)">
-                <svg class="collapse-icon w-4 h-4 text-gray-500 transform transition-transform duration-200 -rotate-90" 
-                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                </svg>
-                <span class="text-lg font-semibold text-gray-900 dark:text-white">
-                    {{ fieldset.name }}
-                </span>
-            </h2>
-            {% if fieldset.description %}
-            <p class="fieldset-description px-6 pb-2 text-sm text-gray-600 dark:text-gray-400 hidden">
-                {{ fieldset.description|safe }}
-            </p>
-            {% endif %}
-            {% endif %}
-            
-            {# Fieldset Content #}
-            <div class="fieldset-content px-6 py-6 space-y-6{% if fieldset.name %} hidden{% endif %}">
-                {% for line in fieldset %}
-                <div class="{% if line.fields|length > 1 %}grid grid-cols-1 md:grid-cols-{{ line.fields|length }} gap-6{% endif %}">
-                    {% for field in line %}
-                    <div class="{% if field.is_readonly %}opacity-75{% endif %}">
-                        <label for="{{ field.field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            {{ field.field.label }}
-                            {% if field.field.field.required %}
-                            <span class="text-red-600 dark:text-red-400">*</span>
-                            {% endif %}
-                        </label>
-                        
-                        {% if field.is_readonly %}
-                        <div class="px-3 py-2 bg-gray-50 dark:bg-gray-750 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100">
-                            {{ field.contents }}
-                        </div>
-                        {% else %}
-                        {{ field.field }}
-                        {% endif %}
-                        
-                        {% if field.field.help_text %}
-                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                            {{ field.field.help_text|safe }}
-                        </p>
-                        {% endif %}
-                        
-                        {% if field.field.errors %}
-                        <div class="mt-2 text-sm text-red-600 dark:text-red-400">
-                            {{ field.field.errors }}
-                        </div>
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endfor %}
-            </div>
-        </fieldset>
+            {% include "admin/includes/fieldset.html" %}
         {% endfor %}
         {% endblock %}
     </div>
