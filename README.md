@@ -395,3 +395,6 @@ Made with ❤️ by a Django enthusiast
 **Developer LinkedIn**: https://linkedin.com/in/todianedev
 
 **Coffee Always Welcome**: https://ko-fi.com/todianedev ❤️
+
+
+Maintained by [Diane Corriette](https://github.com/todiane)
