@@ -114,17 +114,6 @@
       </table>
     </div>
     
-    {# Add Row Link #}
-    {% if inline_admin_formset.has_add_permission %}
-    <div class="add-row px-4 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
-      <a href="#" class="inline-flex items-center text-sm font-medium text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-        </svg>
-        {% blocktranslate with verbose_name=inline_admin_formset.opts.verbose_name %}Add another {{ verbose_name }}{% endblocktranslate %}
-      </a>
-    </div>
-    {% endif %}
     
   </fieldset>
 </div>
