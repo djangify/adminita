@@ -171,16 +171,7 @@
             {% endblock %}
         </div>
     </div>
-    
-    
-{% block extrajs %}
-  {{ block.super }}
-  <script src="{% url 'admin:jsi18n' %}"></script>
-  <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'admin/js/jquery.init.js' %}"></script>
-  <script src="{% static 'admin/js/core.js' %}"></script>
-  <script src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
-{% endblock %}
+    {% block extrajs %}{% endblock %}
     
 </body>
 </html>

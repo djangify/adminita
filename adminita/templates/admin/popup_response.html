@@ -4,22 +4,177 @@
     <title>{% trans "Popup closing…" %}</title>
 </head>
 <body>
+<p style="font-family: sans-serif; padding: 20px;">{% trans "Saving..." %}</p>
 <script type="application/json" id="django-admin-popup-response-constants">{{ popup_response_data }}</script>
 <script type="text/javascript">
-    (function() {
-        var initData = JSON.parse(document.getElementById("django-admin-popup-response-constants").textContent);
-        switch(initData.action) {
-            case 'change':
-                opener.dismissChangeRelatedObjectPopup(window, initData.value, initData.obj, initData.new_value);
-                break;
-            case 'delete':
-                opener.dismissDeleteRelatedObjectPopup(window, initData.value);
-                break;
-            default:
-                opener.dismissAddRelatedObjectPopup(window, initData.value, initData.obj);
-                break;
+(function() {
+    'use strict';
+    
+    var initData;
+    try {
+        initData = JSON.parse(document.getElementById("django-admin-popup-response-constants").textContent);
+    } catch(e) {
+        console.error('Failed to parse popup data:', e);
+        document.body.innerHTML = '<p style="color: red; padding: 20px;">Error: Could not process response. Please close this window and refresh the parent page.</p>';
+        return;
+    }
+    
+    var action = initData.action || 'add';
+    var value = initData.value;
+    var obj = initData.obj;
+    var newValue = initData.new_value;
+    
+    // Method 1: Try standard opener approach
+    function tryOpener() {
+        if (!window.opener) {
+            console.log('No window.opener available');
+            return false;
         }
-    })();
+        
+        try {
+            // Check if opener has the dismiss functions
+            if (action === 'change' && typeof window.opener.dismissChangeRelatedObjectPopup === 'function') {
+                window.opener.dismissChangeRelatedObjectPopup(window, value, obj, newValue);
+                return true;
+            } else if (action === 'delete' && typeof window.opener.dismissDeleteRelatedObjectPopup === 'function') {
+                window.opener.dismissDeleteRelatedObjectPopup(window, value);
+                return true;
+            } else if (typeof window.opener.dismissAddRelatedObjectPopup === 'function') {
+                window.opener.dismissAddRelatedObjectPopup(window, value, obj);
+                return true;
+            }
+            
+            console.log('Opener exists but dismiss function not found');
+            return false;
+        } catch(e) {
+            console.log('Opener access error:', e);
+            return false;
+        }
+    }
+    
+    // Method 2: Try postMessage to parent
+    function tryPostMessage() {
+        if (!window.opener) {
+            console.log('No opener for postMessage');
+            return false;
+        }
+        
+        try {
+            var message = {
+                type: 'adminita-popup-response',
+                action: action,
+                value: value,
+                obj: obj,
+                newValue: newValue,
+                windowName: window.name
+            };
+            
+            window.opener.postMessage(message, '*');
+            console.log('postMessage sent:', message);
+            
+            // Close after a short delay to allow message processing
+            setTimeout(function() {
+                window.close();
+            }, 100);
+            
+            return true;
+        } catch(e) {
+            console.log('postMessage error:', e);
+            return false;
+        }
+    }
+    
+    // Method 3: Try to access opener's DOM directly
+    function tryDirectDOM() {
+        if (!window.opener) return false;
+        
+        try {
+            // Extract select ID from window name (format: id_fieldname__popup)
+            var selectId = window.name.replace(/__popup$/, '');
+            var select = window.opener.document.getElementById(selectId);
+            
+            if (!select) {
+                console.log('Could not find select element:', selectId);
+                return false;
+            }
+            
+            if (action === 'add' || action === 'default') {
+                // Create and add new option
+                var option = window.opener.document.createElement('option');
+                option.value = value;
+                option.textContent = obj;
+                option.selected = true;
+                
+                // Deselect others
+                for (var i = 0; i < select.options.length; i++) {
+                    select.options[i].selected = false;
+                }
+                
+                select.appendChild(option);
+                
+                // Trigger change event
+                var event = new Event('change', { bubbles: true });
+                select.dispatchEvent(event);
+                
+                console.log('Direct DOM update successful');
+                window.close();
+                return true;
+            } else if (action === 'change') {
+                // Update existing option
+                for (var i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value == (newValue || value)) {
+                        select.options[i].textContent = obj;
+                        break;
+                    }
+                }
+                window.close();
+                return true;
+            } else if (action === 'delete') {
+                // Remove option
+                for (var i = select.options.length - 1; i >= 0; i--) {
+                    if (select.options[i].value == value) {
+                        select.remove(i);
+                        break;
+                    }
+                }
+                window.close();
+                return true;
+            }
+            
+            return false;
+        } catch(e) {
+            console.log('Direct DOM access error:', e);
+            return false;
+        }
+    }
+    
+    // Try all methods in sequence
+    var success = false;
+    
+    // Try opener functions first
+    success = tryOpener();
+    
+    if (!success) {
+        console.log('Opener method failed, trying postMessage...');
+        success = tryPostMessage();
+    }
+    
+    if (!success) {
+        console.log('postMessage failed, trying direct DOM...');
+        success = tryDirectDOM();
+    }
+    
+    if (!success) {
+        // All methods failed - show message to user
+        console.log('All popup communication methods failed');
+        document.body.innerHTML = '<div style="font-family: sans-serif; padding: 20px; text-align: center;">' +
+            '<p style="color: green; font-weight: bold; font-size: 18px;">&#10003; Saved successfully!</p>' +
+            '<p style="margin-top: 15px;">The item was saved but the dropdown could not be updated automatically.</p>' +
+            '<p><strong>Please close this window and refresh the parent page to see your new item.</strong></p>' +
+            '<button onclick="window.close()" style="margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer;">Close Window</button>' +
+            '</div>';
+    }
+})();
 </script>
 </body>
 </html>

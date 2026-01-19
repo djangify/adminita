@@ -316,6 +316,10 @@
 {% endblock %}
 
 {% block extrajs %}
-    {{ block.super }}
+    <script src="{% url 'admin:jsi18n' %}"></script>
+    <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    <script src="{% static 'admin/js/core.js' %}"></script>
+    <script src="{% static 'admin/js/actions.js' %}"></script>
     {{ media.js }}
 {% endblock %}

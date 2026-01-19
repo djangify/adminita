@@ -83,10 +83,10 @@
 {% endblock %}
 
 {% block extrajs %}
-    {{ block.super }}
     <script src="{% url 'admin:jsi18n' %}"></script>
     <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'admin/js/jquery.init.js' %}"></script>
+    <script src="{% static 'admin/js/core.js' %}"></script>
     <script src="{% static 'admin/js/urlify.js' %}"></script>
     <script src="{% static 'admin/js/prepopulate.js' %}"></script>
     <script src="{% static 'admin/js/vendor/xregexp/xregexp.min.js' %}"></script>
@@ -96,6 +96,7 @@
     {% if add %}{% prepopulated_fields_js %}{% endif %}
     
     <script>
+    // Fieldset toggle functionality
     function toggleFieldset(header) {
         const fieldset = header.closest('fieldset');
         const content = fieldset.querySelector('.fieldset-content');
@@ -116,7 +117,6 @@
     // Auto-expand fieldsets that contain validation errors
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('fieldset.module').forEach(function(fieldset) {
-            // Check if this fieldset contains any error messages
             const hasErrors = fieldset.querySelector('.text-red-600, .text-red-400, .errorlist');
             if (hasErrors) {
                 const content = fieldset.querySelector('.fieldset-content');
@@ -131,6 +131,481 @@
             }
         });
     });
+    </script>
+
+    <script>
+    // ===========================================
+    // POPUP HANDLER - Fixes Django's popup system for Adminita
+    // ===========================================
+    (function() {
+        'use strict';
+        
+        // Skip if we're inside a popup
+        if (window.name && window.name.indexOf('__') !== -1) {
+            console.log('Inside popup, skipping parent page handlers');
+            return;
+        }
+        
+        // Global function that popup_response.html calls
+        window.dismissAddRelatedObjectPopup = function(win, newId, newRepr) {
+            console.log('dismissAddRelatedObjectPopup called:', newId, newRepr);
+            
+            var selectId = null;
+            
+            // Try to get select ID from window name
+            if (win && win.name) {
+                selectId = win.name.replace(/__popup$/, '');
+            }
+            
+            // Find the select element
+            var select = selectId ? document.getElementById(selectId) : null;
+            
+            if (select) {
+                // Add the new option
+                var option = document.createElement('option');
+                option.value = newId;
+                option.textContent = newRepr;
+                option.selected = true;
+                
+                // Deselect other options
+                for (var i = 0; i < select.options.length; i++) {
+                    select.options[i].selected = false;
+                }
+                
+                select.appendChild(option);
+                
+                // Trigger change event
+                var event = new Event('change', { bubbles: true });
+                select.dispatchEvent(event);
+                
+                console.log('New option added to:', selectId);
+            } else {
+                console.log('Could not find select element:', selectId);
+            }
+            
+            // Close the popup window
+            if (win && typeof win.close === 'function') {
+                try {
+                    win.close();
+                } catch(e) {
+                    console.log('Could not close popup:', e);
+                }
+            }
+        };
+        
+        window.dismissChangeRelatedObjectPopup = function(win, objId, newRepr, newId) {
+            console.log('dismissChangeRelatedObjectPopup called');
+            
+            var selectId = null;
+            if (win && win.name) {
+                selectId = win.name.replace(/__popup$/, '');
+            }
+            
+            var select = selectId ? document.getElementById(selectId) : null;
+            
+            if (select) {
+                var id = newId || objId;
+                for (var i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value == id) {
+                        select.options[i].textContent = newRepr;
+                        break;
+                    }
+                }
+            }
+            
+            if (win && typeof win.close === 'function') {
+                try { win.close(); } catch(e) {}
+            }
+        };
+        
+        window.dismissDeleteRelatedObjectPopup = function(win, objId) {
+            console.log('dismissDeleteRelatedObjectPopup called');
+            
+            var selectId = null;
+            if (win && win.name) {
+                selectId = win.name.replace(/__popup$/, '');
+            }
+            
+            var select = selectId ? document.getElementById(selectId) : null;
+            
+            if (select) {
+                for (var i = select.options.length - 1; i >= 0; i--) {
+                    if (select.options[i].value == objId) {
+                        select.remove(i);
+                        break;
+                    }
+                }
+            }
+            
+            if (win && typeof win.close === 'function') {
+                try { win.close(); } catch(e) {}
+            }
+        };
+        
+        // Listen for postMessage from popup (fallback method)
+        window.addEventListener('message', function(event) {
+            if (!event.data || event.data.type !== 'adminita-popup-response') {
+                return;
+            }
+            
+            console.log('Received postMessage from popup:', event.data);
+            
+            var data = event.data;
+            var selectId = data.windowName ? data.windowName.replace(/__popup$/, '') : null;
+            var select = selectId ? document.getElementById(selectId) : null;
+            
+            if (!select) {
+                console.log('Could not find select for postMessage:', selectId);
+                return;
+            }
+            
+            if (data.action === 'add' || !data.action) {
+                var option = document.createElement('option');
+                option.value = data.value;
+                option.textContent = data.obj;
+                option.selected = true;
+                
+                for (var i = 0; i < select.options.length; i++) {
+                    select.options[i].selected = false;
+                }
+                
+                select.appendChild(option);
+                
+                var evt = new Event('change', { bubbles: true });
+                select.dispatchEvent(evt);
+                
+                console.log('postMessage: New option added');
+            } else if (data.action === 'change') {
+                var id = data.newValue || data.value;
+                for (var i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value == id) {
+                        select.options[i].textContent = data.obj;
+                        break;
+                    }
+                }
+            } else if (data.action === 'delete') {
+                for (var i = select.options.length - 1; i >= 0; i--) {
+                    if (select.options[i].value == data.value) {
+                        select.remove(i);
+                        break;
+                    }
+                }
+            }
+        });
+        
+        // Initialize popup links on DOM ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initPopupLinks();
+        });
+        
+        function initPopupLinks() {
+            // Find all "add related" links using multiple selectors
+            var addLinks = document.querySelectorAll(
+                '.related-widget-wrapper a[href*="_popup=1"], ' +
+                '.related-widget-wrapper a[href*="add/"], ' +
+                'a.add-related, ' +
+                'a[data-popup="yes"]'
+            );
+            
+            console.log('Found popup links:', addLinks.length);
+            
+            addLinks.forEach(function(link) {
+                // Get the associated select field ID
+                var wrapper = link.closest('.related-widget-wrapper');
+                var select = wrapper ? wrapper.querySelector('select') : null;
+                var selectId = select ? select.id : null;
+                
+                if (!selectId) {
+                    // Try to extract from link ID (e.g., "add_id_category" -> "id_category")
+                    if (link.id && link.id.indexOf('add_') === 0) {
+                        selectId = link.id.replace('add_', '');
+                    }
+                }
+                
+                // Clone to remove existing handlers
+                var newLink = link.cloneNode(true);
+                link.parentNode.replaceChild(newLink, link);
+                
+                newLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var href = this.href;
+                    
+                    // Ensure _popup=1 is in the URL
+                    if (href.indexOf('_popup=1') === -1) {
+                        href += (href.indexOf('?') === -1 ? '?' : '&') + '_popup=1';
+                    }
+                    
+                    // Use the select ID for window name
+                    var windowName = (selectId || 'popup_' + Date.now()) + '__popup';
+                    
+                    console.log('Opening popup:', href, 'Window name:', windowName);
+                    
+                    // Calculate popup dimensions and position
+                    var width = 800;
+                    var height = 600;
+                    var left = Math.max(0, (screen.width - width) / 2);
+                    var top = Math.max(0, (screen.height - height) / 2);
+                    
+                    // Open the popup
+                    var popup = window.open(
+                        href,
+                        windowName,
+                        'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',scrollbars=yes,resizable=yes,toolbar=no,menubar=no'
+                    );
+                    
+                    if (popup) {
+                        popup.focus();
+                    } else {
+                        alert('Popup was blocked. Please allow popups for this site.');
+                    }
+                    
+                    return false;
+                });
+            });
+            
+            // Also handle change/edit links
+            var changeLinks = document.querySelectorAll(
+                '.related-widget-wrapper a[href*="change/"], ' +
+                'a.change-related'
+            );
+            
+            changeLinks.forEach(function(link) {
+                var wrapper = link.closest('.related-widget-wrapper');
+                var select = wrapper ? wrapper.querySelector('select') : null;
+                var selectId = select ? select.id : null;
+                
+                if (!selectId && link.id && link.id.indexOf('change_') === 0) {
+                    selectId = link.id.replace('change_', '');
+                }
+                
+                var newLink = link.cloneNode(true);
+                link.parentNode.replaceChild(newLink, link);
+                
+                newLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    var href = this.href;
+                    if (href.indexOf('_popup=1') === -1) {
+                        href += (href.indexOf('?') === -1 ? '?' : '&') + '_popup=1';
+                    }
+                    
+                    var windowName = (selectId || 'popup_' + Date.now()) + '__popup';
+                    
+                    var width = 800;
+                    var height = 600;
+                    var left = Math.max(0, (screen.width - width) / 2);
+                    var top = Math.max(0, (screen.height - height) / 2);
+                    
+                    var popup = window.open(
+                        href,
+                        windowName,
+                        'width=' + width + ',height=' + height + ',left=' + left + ',top=' + top + ',scrollbars=yes,resizable=yes,toolbar=no,menubar=no'
+                    );
+                    
+                    if (popup) popup.focus();
+                    
+                    return false;
+                });
+            });
+        }
+    })();
+    </script>
+
+    <script>
+    // ===========================================
+    // FORM AUTOSAVE - Preserves content across page refresh
+    // ===========================================
+    (function() {
+        'use strict';
+        
+        // Don't run in popups
+        if (window.name && window.name.indexOf('__') !== -1) {
+            return;
+        }
+        
+        var form = null;
+        var formId = window.location.pathname;
+        var storageKey = 'adminFormData_' + formId.replace(/\//g, '_');
+        var saveInterval = null;
+        
+        function getFormFields() {
+            if (!form) return [];
+            return form.querySelectorAll(
+                'input[type="text"], input[type="email"], input[type="url"], input[type="number"], ' +
+                'textarea, select'
+            );
+        }
+        
+        function saveFormData() {
+            if (!form) return;
+            
+            var data = {};
+            var fields = getFormFields();
+            
+            fields.forEach(function(field) {
+                if (field.name && field.value && field.value !== '---------' && field.value !== '') {
+                    data[field.name] = field.value;
+                }
+            });
+            
+            // Save TinyMCE/rich text editor content
+            if (typeof tinymce !== 'undefined' && tinymce.editors && tinymce.editors.length > 0) {
+                tinymce.editors.forEach(function(editor) {
+                    try {
+                        var content = editor.getContent();
+                        if (content) {
+                            var textarea = document.getElementById(editor.id);
+                            if (textarea && textarea.name) {
+                                data[textarea.name] = content;
+                            }
+                            data['_tinymce_' + editor.id] = content;
+                        }
+                    } catch(e) {}
+                });
+            }
+            
+            if (Object.keys(data).length > 0) {
+                try {
+                    localStorage.setItem(storageKey, JSON.stringify(data));
+                    console.log('Form data saved:', Object.keys(data).length, 'fields');
+                } catch(e) {
+                    console.log('localStorage error:', e);
+                }
+            }
+        }
+        
+        function restoreFormData() {
+            var saved = null;
+            try {
+                saved = localStorage.getItem(storageKey);
+            } catch(e) {
+                return;
+            }
+            
+            if (!saved) {
+                console.log('No saved form data found');
+                return;
+            }
+            
+            console.log('Restoring form data...');
+            
+            try {
+                var data = JSON.parse(saved);
+                
+                // Restore regular fields immediately
+                Object.keys(data).forEach(function(name) {
+                    if (name.indexOf('_tinymce_') === 0) return;
+                    
+                    var field = form.querySelector('[name="' + name + '"]');
+                    if (field && field.type !== 'hidden' && field.type !== 'file') {
+                        if (!field.value || field.value === '---------' || field.value === '') {
+                            field.value = data[name];
+                            console.log('Restored field:', name);
+                        }
+                    }
+                });
+                
+                // Restore TinyMCE with retry
+                var tinymceAttempts = 0;
+                var maxAttempts = 20; // Try for 10 seconds
+                
+                function restoreTinyMCE() {
+                    tinymceAttempts++;
+                    
+                    if (typeof tinymce === 'undefined' || !tinymce.editors || tinymce.editors.length === 0) {
+                        if (tinymceAttempts < maxAttempts) {
+                            setTimeout(restoreTinyMCE, 500);
+                        }
+                        return;
+                    }
+                    
+                    tinymce.editors.forEach(function(editor) {
+                        // Wait for editor to be fully initialized
+                        if (!editor.initialized) {
+                            editor.on('init', function() {
+                                restoreEditorContent(editor, data);
+                            });
+                        } else {
+                            restoreEditorContent(editor, data);
+                        }
+                    });
+                }
+                
+                function restoreEditorContent(editor, data) {
+                    try {
+                        var content = data['_tinymce_' + editor.id];
+                        if (!content) {
+                            var textarea = document.getElementById(editor.id);
+                            if (textarea && textarea.name) {
+                                content = data[textarea.name];
+                            }
+                        }
+                        
+                        if (content && !editor.getContent()) {
+                            editor.setContent(content);
+                            console.log('Restored TinyMCE content for:', editor.id);
+                        }
+                    } catch(e) {
+                        console.log('TinyMCE restore error:', e);
+                    }
+                }
+                
+                restoreTinyMCE();
+                
+            } catch(e) {
+                console.log('Form restore error:', e);
+            }
+        }
+        
+        function clearFormData() {
+            try {
+                localStorage.removeItem(storageKey);
+                console.log('Form data cleared');
+            } catch(e) {}
+        }
+        
+        function initAutosave() {
+            form = document.querySelector('form[method="post"]');
+            if (!form) {
+                console.log('No form found for autosave');
+                return;
+            }
+            
+            console.log('Initializing autosave for:', storageKey);
+            
+            // Restore saved data
+            restoreFormData();
+            
+            // Save on input/change
+            form.addEventListener('input', function() {
+                setTimeout(saveFormData, 100);
+            });
+            form.addEventListener('change', function() {
+                setTimeout(saveFormData, 100);
+            });
+            
+            // Periodic save every 2 seconds (catches TinyMCE and other dynamic changes)
+            saveInterval = setInterval(saveFormData, 2000);
+            
+            // Clear on successful submit
+            form.addEventListener('submit', function() {
+                clearFormData();
+                if (saveInterval) {
+                    clearInterval(saveInterval);
+                }
+            });
+        }
+        
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAutosave);
+        } else {
+            initAutosave();
+        }
+    })();
     </script>
 
 {% endblock %}
