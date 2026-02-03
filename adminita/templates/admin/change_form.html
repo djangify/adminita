@@ -35,6 +35,8 @@
 
     <form method="post" id="{{ opts.model_name }}_form" enctype="multipart/form-data" class="space-y-6">
     {% csrf_token %}
+    {% if is_popup %}<input type="hidden" name="_popup" value="1">{% endif %}
+    {% if to_field %}<input type="hidden" name="_to_field" value="{{ to_field }}">{% endif %}
     
     {# Form Errors #}
     {% if errors %}
@@ -175,8 +177,8 @@
                 select.appendChild(option);
                 
                 // Trigger change event
-                var event = new Event('change', { bubbles: true });
-                select.dispatchEvent(event);
+                //var event = new Event('change', { bubbles: true });
+                //select.dispatchEvent(event);
                 
                 console.log('New option added to:', selectId);
             } else {
@@ -270,9 +272,6 @@
                 }
                 
                 select.appendChild(option);
-                
-                var evt = new Event('change', { bubbles: true });
-                select.dispatchEvent(evt);
                 
                 console.log('postMessage: New option added');
             } else if (data.action === 'change') {

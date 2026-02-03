@@ -9,7 +9,28 @@
     <link rel="stylesheet" href="{% static 'adminita/action-fix.css' %}">
     <script src="{% static 'adminita/adminita-tailwind.js' %}" defer></script>
     <link rel="stylesheet" href="{% static 'admin/css/widgets.css' %}">
-  </head>
+    {% if is_popup %}
+        <style>
+            /* Popup mode: hide everything except the form */
+            body.is-popup #sidebar,
+            body.is-popup #sidebar-overlay,
+            body.is-popup header,
+            body.is-popup footer,
+            body.is-popup .breadcrumb,
+            body.is-popup #sidebar-toggle {
+                display: none !important;
+            }
+            body.is-popup #main-content {
+                margin-left: 0 !important;
+            }
+            body.is-popup main {
+                padding: 1rem !important;
+            }
+            body.is-popup .max-w-7xl {
+                max-width: 100% !important;
+            }
+        </style>
+    {% endif %}
     {% block dark_mode_vars %}
     <script>
         // Dark mode handling
@@ -24,7 +45,7 @@
     {% block extra_head %}{% endblock %}
 </head>
 
-<body class="min-h-full bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+<body class="min-h-full bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 {% if is_popup %}is-popup{% endif %}">
     <div class="flex min-h-screen">
         
         <!-- Sidebar -->
@@ -87,7 +108,7 @@
                         </button>
                         
                         {% block page_title %}
-                        <h1 class="text-xl font-semibold text-gray-900 dark:text-white">
+                        <h1 class="text-xl font-semibold text-gray-900 dark:text-white ml-0">
                             {% block content_title %}{% endblock %}
                         </h1>
                         {% endblock %}
@@ -110,12 +131,10 @@
                             <span class="text-gray-700 dark:text-gray-300 hidden sm:inline">
                                 {% trans 'Welcome,' %} <strong>{% firstof user.get_short_name user.first_name "back" %}</strong>
                             </span>
-                            {% if site_url %}
-                            <a href="{{ site_url }}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
+                            <a href="{{ site_url|default:'/' }}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
                                 {% trans 'View site' %}
                             </a>
                             <span class="text-gray-400 hidden sm:inline">/</span>
-                            {% endif %}
                             <a href="{% url 'admin:password_change' %}" class="text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors hidden sm:inline">
                                 {% trans 'Change password' %}
                             </a>

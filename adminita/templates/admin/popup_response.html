@@ -2,20 +2,49 @@
 <html>
 <head>
     <title>{% trans "Popup closing…" %}</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 20px; }
+        .success { color: #16a34a; }
+        .error { color: #dc2626; }
+        .info { color: #2563eb; margin: 10px 0; font-size: 14px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; margin-top: 15px; }
+    </style>
 </head>
 <body>
-<p style="font-family: sans-serif; padding: 20px;">{% trans "Saving..." %}</p>
-<script type="application/json" id="django-admin-popup-response-constants">{{ popup_response_data }}</script>
+<p>{% trans "Processing..." %}</p>
+
+<!-- Django provides this data -->
+<script type="application/json" id="django-admin-popup-response-constants">{{ popup_response_data|safe }}</script>
+
 <script type="text/javascript">
 (function() {
     'use strict';
     
+    // Debug info
+    console.log('=== Popup Response Debug ===');
+    console.log('window.name:', window.name);
+    console.log('window.opener:', window.opener);
+    
+    var dataElement = document.getElementById("django-admin-popup-response-constants");
+    console.log('Data element:', dataElement);
+    console.log('Data content:', dataElement ? dataElement.textContent : 'NO ELEMENT');
+    
     var initData;
     try {
-        initData = JSON.parse(document.getElementById("django-admin-popup-response-constants").textContent);
+        var rawData = dataElement.textContent;
+        console.log('Raw data:', rawData);
+        initData = JSON.parse(rawData);
+        console.log('Parsed data:', initData);
     } catch(e) {
-        console.error('Failed to parse popup data:', e);
-        document.body.innerHTML = '<p style="color: red; padding: 20px;">Error: Could not process response. Please close this window and refresh the parent page.</p>';
+        console.error('JSON parse error:', e);
+        // Show debug info to help diagnose
+        document.body.innerHTML = '<div>' +
+            '<p class="error"><strong>Debug Info - JSON Parse Failed</strong></p>' +
+            '<p class="info">Raw data: <code>' + (dataElement ? dataElement.textContent : 'no element') + '</code></p>' +
+            '<p class="info">Error: ' + e.message + '</p>' +
+            '<p>The category was likely saved. Please close this window and refresh the parent page.</p>' +
+            '<button onclick="window.close()">Close Window</button>' +
+            '</div>';
         return;
     }
     
@@ -24,15 +53,16 @@
     var obj = initData.obj;
     var newValue = initData.new_value;
     
-    // Method 1: Try standard opener approach
+    console.log('Action:', action, 'Value:', value, 'Obj:', obj);
+    
+    // Method 1: Standard Django opener approach
     function tryOpener() {
         if (!window.opener) {
-            console.log('No window.opener available');
+            console.log('No window.opener');
             return false;
         }
         
         try {
-            // Check if opener has the dismiss functions
             if (action === 'change' && typeof window.opener.dismissChangeRelatedObjectPopup === 'function') {
                 window.opener.dismissChangeRelatedObjectPopup(window, value, obj, newValue);
                 return true;
@@ -40,11 +70,12 @@
                 window.opener.dismissDeleteRelatedObjectPopup(window, value);
                 return true;
             } else if (typeof window.opener.dismissAddRelatedObjectPopup === 'function') {
+                console.log('Calling dismissAddRelatedObjectPopup');
                 window.opener.dismissAddRelatedObjectPopup(window, value, obj);
                 return true;
             }
-            
-            console.log('Opener exists but dismiss function not found');
+            console.log('Opener exists but no dismiss function found');
+            console.log('Available functions:', Object.keys(window.opener).filter(k => k.indexOf('dismiss') !== -1));
             return false;
         } catch(e) {
             console.log('Opener access error:', e);
@@ -52,12 +83,9 @@
         }
     }
     
-    // Method 2: Try postMessage to parent
+    // Method 2: postMessage
     function tryPostMessage() {
-        if (!window.opener) {
-            console.log('No opener for postMessage');
-            return false;
-        }
+        if (!window.opener) return false;
         
         try {
             var message = {
@@ -68,15 +96,9 @@
                 newValue: newValue,
                 windowName: window.name
             };
-            
             window.opener.postMessage(message, '*');
-            console.log('postMessage sent:', message);
-            
-            // Close after a short delay to allow message processing
-            setTimeout(function() {
-                window.close();
-            }, 100);
-            
+            console.log('postMessage sent');
+            setTimeout(function() { window.close(); }, 150);
             return true;
         } catch(e) {
             console.log('postMessage error:', e);
@@ -84,94 +106,62 @@
         }
     }
     
-    // Method 3: Try to access opener's DOM directly
+    // Method 3: Direct DOM manipulation
     function tryDirectDOM() {
         if (!window.opener) return false;
         
         try {
-            // Extract select ID from window name (format: id_fieldname__popup)
             var selectId = window.name.replace(/__popup$/, '');
+            console.log('Looking for select:', selectId);
             var select = window.opener.document.getElementById(selectId);
             
             if (!select) {
-                console.log('Could not find select element:', selectId);
+                console.log('Select not found');
                 return false;
             }
             
             if (action === 'add' || action === 'default') {
-                // Create and add new option
                 var option = window.opener.document.createElement('option');
                 option.value = value;
                 option.textContent = obj;
                 option.selected = true;
                 
-                // Deselect others
                 for (var i = 0; i < select.options.length; i++) {
                     select.options[i].selected = false;
                 }
                 
                 select.appendChild(option);
-                
-                // Trigger change event
-                var event = new Event('change', { bubbles: true });
-                select.dispatchEvent(event);
-                
                 console.log('Direct DOM update successful');
                 window.close();
                 return true;
-            } else if (action === 'change') {
-                // Update existing option
-                for (var i = 0; i < select.options.length; i++) {
-                    if (select.options[i].value == (newValue || value)) {
-                        select.options[i].textContent = obj;
-                        break;
-                    }
-                }
-                window.close();
-                return true;
-            } else if (action === 'delete') {
-                // Remove option
-                for (var i = select.options.length - 1; i >= 0; i--) {
-                    if (select.options[i].value == value) {
-                        select.remove(i);
-                        break;
-                    }
-                }
-                window.close();
-                return true;
             }
-            
             return false;
         } catch(e) {
-            console.log('Direct DOM access error:', e);
+            console.log('Direct DOM error:', e);
             return false;
         }
     }
     
-    // Try all methods in sequence
-    var success = false;
-    
-    // Try opener functions first
-    success = tryOpener();
+    // Try all methods
+    var success = tryOpener();
     
     if (!success) {
-        console.log('Opener method failed, trying postMessage...');
+        console.log('Trying postMessage...');
         success = tryPostMessage();
     }
     
     if (!success) {
-        console.log('postMessage failed, trying direct DOM...');
+        console.log('Trying direct DOM...');
         success = tryDirectDOM();
     }
     
     if (!success) {
-        // All methods failed - show message to user
-        console.log('All popup communication methods failed');
-        document.body.innerHTML = '<div style="font-family: sans-serif; padding: 20px; text-align: center;">' +
-            '<p style="color: green; font-weight: bold; font-size: 18px;">&#10003; Saved successfully!</p>' +
-            '<p style="margin-top: 15px;">The item was saved but the dropdown could not be updated automatically.</p>' +
-            '<p><strong>Please close this window and refresh the parent page to see your new item.</strong></p>' +
-            '<button onclick="window.close()" style="margin-top: 15px; padding: 10px 20px; font-size: 16px; cursor: pointer;">Close Window</button>' +
+        console.log('All methods failed');
+        document.body.innerHTML = '<div style="text-align: center;">' +
+            '<p class="success" style="font-size: 18px; font-weight: bold;">✓ Saved successfully!</p>' +
+            '<p style="margin: 15px 0;">The new item was saved but the dropdown could not be updated automatically.</p>' +
+            '<p><strong>Please close this window and refresh the parent page.</strong></p>' +
+            '<button onclick="window.close()">Close Window</button>' +
             '</div>';
     }
 })();
