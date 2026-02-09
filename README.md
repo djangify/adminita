@@ -1,5 +1,3 @@
-readme for Adminita
-
 ![adminita header](https://github.com/djangify/adminita/blob/336735abb0e7679f4e2622615f891d178fd4bab3/adminita-homepage.png)
 
 
