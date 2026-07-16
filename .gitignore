@@ -17,10 +17,6 @@ OLDsettings.py
 node_modules/
 blog/fixtures
 
-package-lock.json
-package.json
-tailwind.config.js
-
 # Python/Django
 __pycache__/
 *.py[cod]

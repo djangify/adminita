@@ -1,0 +1,21 @@
+{
+  "name": "adminita",
+  "version": "0.1.12",
+  "description": "A modern admin interface for Django using Tailwind CSS v4",
+  "scripts": {
+    "build": "tailwindcss -i ./adminita/static/src/input.css -o ./adminita/static/adminita/adminita-tailwind.css --minify",
+    "watch": "tailwindcss -i ./adminita/static/src/input.css -o ./adminita/static/adminita/adminita-tailwind.css --watch",
+    "dev": "npm run watch"
+  },
+  "keywords": [
+    "django",
+    "admin",
+    "tailwind",
+    "tailwindcss"
+  ],
+  "author": "@ToDianeDev",
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^4.0.0"
+  }
+}

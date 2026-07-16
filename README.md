@@ -6,9 +6,10 @@
 A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform your Django admin interface into a sleek, responsive dashboard with dark mode support.
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
-![Django](https://img.shields.io/badge/django-4.0+-green.svg)
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
+![Django](https://img.shields.io/badge/django-4.2+-green.svg)
 ![Tailwind CSS](https://img.shields.io/badge/tailwind-v4-38bdf8.svg)
+![PyPI](https://img.shields.io/pypi/v/adminita.svg)
 
 ## ✨ Features
 
@@ -289,35 +290,17 @@ When extending Adminita templates in your own project:
 
 ## 🤝 Contributing
 
-We welcome contributions! Adminita is an open-source project and we'd love your help making it better.
-
-### How to Contribute
-
-1. **Fork the repository**
-2. **Create a feature branch**: `git checkout -b feature/amazing-feature`
-3. **Make your changes**
-4. **Test thoroughly**
-5. **Commit your changes**: `git commit -m 'Add amazing feature'`
-6. **Push to the branch**: `git push origin feature/amazing-feature`
-7. **Open a Pull Request**
+We welcome contributions! Adminita is an open-source project and we'd love your help making it better. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full guide (setup, coding standards, PR process) and our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ### Priority Issues
 
 We especially need help with:
 
-- 🐛 **Dark Mode Bug** - The toggle isn't working (UPDATE: This now works as of December 21 2025)
 - 📱 **Mobile Responsiveness** - Testing on various devices
 - ♿ **Accessibility** - ARIA labels, keyboard navigation, screen reader support
 - 🎨 **Additional Themes** - Creating alternative color schemes
+- 🧪 **Test Coverage** - Expanding the test suite
 - 📝 **Documentation** - Improving guides and examples
-
-### Development Guidelines
-
-- Follow Django's template style guidelines
-- Use Tailwind CSS utility classes (avoid custom CSS when possible)
-- Test on multiple browsers (Chrome, Firefox, Safari, Edge)
-- Ensure dark mode compatibility for all new features
-- Update documentation for any new features
 
 ## 📦 Requirements
 
@@ -329,13 +312,14 @@ We especially need help with:
 ## 🧪 Testing
 
 ```bash
-# Run Django tests
-python manage.py test
+# Run the test suite
+pytest
 
-# Test in multiple browsers
-# Test dark mode toggle
-# Test responsive design on mobile devices
+# Or via Django's test runner
+python manage.py test
 ```
+
+Tests run automatically on every pull request via GitHub Actions across supported Python/Django versions. Manual checks worth doing before submitting a PR: multiple browsers (Chrome, Firefox, Safari, Edge), dark mode toggle, and responsive layout on mobile.
 
 ## 📄 License
 
@@ -368,13 +352,13 @@ Having trouble? Here are some ways to get help:
 
 ## 🗺️ Roadmap
 
-- [ ] Fix dark mode toggle functionality
+- [x] Publish to PyPI
+- [x] Fix dark mode toggle functionality
 - [ ] Add more customization options
 - [ ] Create additional color themes
 - [ ] Improve accessibility (ARIA labels, keyboard navigation)
-- [ ] Add comprehensive test suite
+- [ ] Expand automated test coverage
 - [ ] Create video tutorials
-- [ ] Publish to PyPI
 - [ ] Add support for Django inline forms
 - [ ] Create a documentation website
 

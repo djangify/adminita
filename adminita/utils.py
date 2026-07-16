@@ -61,9 +61,10 @@ class SingletonAdmin(AlwaysVisibleAdmin):
         if obj:
             from django.shortcuts import redirect
             from django.urls import reverse
+
             url = reverse(
-                f'admin:{self.model._meta.app_label}_{self.model._meta.model_name}_change',
-                args=[obj.pk]
+                f"admin:{self.model._meta.app_label}_{self.model._meta.model_name}_change",
+                args=[obj.pk],
             )
             return redirect(url)
         # Otherwise show the standard changelist (with Add button)
