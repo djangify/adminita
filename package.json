@@ -1,6 +1,6 @@
 {
   "name": "adminita",
-  "version": "0.1.12",
+  "version": "0.2.0",
   "description": "A modern admin interface for Django using Tailwind CSS v4",
   "scripts": {
     "build": "tailwindcss -i ./adminita/static/src/input.css -o ./adminita/static/adminita/adminita-tailwind.css --minify",
