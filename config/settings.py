@@ -50,7 +50,6 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "adminita.context_processors.admin_app_list",
             ],
         },
     },
@@ -66,7 +65,10 @@ STATICFILES_DIRS = [
     BASE_DIR / "adminita" / "static",
 ]
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage"},
+}
 
 WHITENOISE_MAX_AGE = 31536000  # 1 year
 

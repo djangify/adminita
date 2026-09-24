@@ -17,6 +17,7 @@ A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform you
 - 🌓 **Dark Mode** - System preference detection with manual toggle
 - 📱 **Responsive Design** - Works seamlessly on desktop. Responsive navigation and touch-friendly controls for phones and tablets
 - 🎯 **Easy Integration** - Drop-in replacement for Django's default admin
+- 💾 **Form Autosave** - Unsaved edits survive a refresh or closed tab, with a Restore/Discard prompt that never overwrites newer changes
 - ⚡ **Fast** - Optimized CSS with no unnecessary bloat
 - 🔧 **Customizable** - Easy to customize colors and styling
 - 🆓 **Open Source** - MIT licensed, free to use and modify
@@ -142,7 +143,7 @@ Adminita provides utility classes to help with common admin patterns.
 
 ### AlwaysVisibleAdmin
 
-Ensures models always appear in the admin index, even if they have custom permissions:
+Ensures models always appear in the admin index, even if the changelist redirects or add is disabled. Viewing and editing still follow Django's normal model permissions:
 ```python
 from adminita.utils import AlwaysVisibleAdmin
 
@@ -153,7 +154,7 @@ class MyModelAdmin(AlwaysVisibleAdmin):
 
 ### SingletonAdmin
 
-For models that should only have one instance (like Site Settings):
+For models that should only have one instance (like Site Settings). The changelist goes straight to the existing instance, adding is blocked once one exists, and deleting is disabled:
 ```python
 from adminita.utils import SingletonAdmin
 
@@ -208,20 +209,21 @@ python manage.py runserver
 adminita/
 ├── adminita/                  # The Django app package
 │   ├── static/
-│   │   ├── css/
-│   │   │   └── adminita-tailwind.css    # Generated CSS (don't edit)
-│   │   ├── js/
-│   │   │   └── adminita-tailwind.js      # JavaScript for dark mode & mobile menu
+│   │   ├── adminita/
+│   │   │   ├── adminita-tailwind.css    # Generated CSS (don't edit)
+│   │   │   ├── action-fix.css           # Styles for Django's own widget markup
+│   │   │   ├── adminita-tailwind.js     # JavaScript for dark mode & mobile menu
+│   │   │   └── adminita-autosave.js     # Keeps unsaved form edits (restore/discard banner)
 │   │   └── src/
 │   │       └── input.css     # Source CSS with Tailwind v4 syntax
 │   ├── templates/
-│   │   └── admin/            # Template overrides
-│   │       ├── base.html
-│   │       ├── base_site.html
-│   │       ├── index.html
-│   │       ├── login.html
-│   │       ├── change_list.html
-│   │       └── change_form.html
+│   │   ├── admin/            # Template overrides
+│   │   │   ├── base.html
+│   │   │   ├── index.html
+│   │   │   ├── login.html
+│   │   │   ├── change_list.html
+│   │   │   └── change_form.html
+│   │   └── registration/     # Points Django's logout/password pages at Adminita's versions
 │   ├── __init__.py
 │   └── apps.py
 ├── config/                    # Django project settings

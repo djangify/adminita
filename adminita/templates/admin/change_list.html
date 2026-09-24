@@ -107,23 +107,23 @@
         .hidden { display: none !important; }
         
         /* Table styling */
-        #result_list table td {
+        #result_list td {
             padding: 0.75rem 1.5rem;
             font-size: 0.875rem;
             color: rgb(55, 65, 81);
             vertical-align: middle;
         }
-        .dark #result_list table td {
+        .dark #result_list td {
             color: rgb(209, 213, 219);
         }
-        #result_list table td a {
+        #result_list td a {
             color: rgb(37, 99, 235);
             text-decoration: none;
         }
-        #result_list table td a:hover {
+        #result_list td a:hover {
             text-decoration: underline;
         }
-        .dark #result_list table td a {
+        .dark #result_list td a {
             color: rgb(96, 165, 250);
         }
         
@@ -238,7 +238,7 @@
                 {% if cl.formset %}{{ cl.formset.management_form }}{% endif %}
 
                 {# Results #}
-                <div id="result_list" class="overflow-x-auto">
+                <div class="overflow-x-auto">
                     {% if cl.result_count %}
                         {% result_list cl %}
                     {% else %}
@@ -316,10 +316,7 @@
 {% endblock %}
 
 {% block extrajs %}
+    {# media.js already includes jQuery, core.js and actions.js; loading them twice binds handlers twice. #}
     <script src="{% url 'admin:jsi18n' %}"></script>
-    <script src="{% static 'admin/js/vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'admin/js/jquery.init.js' %}"></script>
-    <script src="{% static 'admin/js/core.js' %}"></script>
-    <script src="{% static 'admin/js/actions.js' %}"></script>
     {{ media.js }}
 {% endblock %}
