@@ -2,12 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const buttons = document.querySelectorAll("#dark-mode-toggle");
   const html = document.documentElement;
 
-  // Apply saved mode ON LOAD
-  if (localStorage.darkMode === "true") {
-    html.classList.add("dark");
-  } else {
-    html.classList.remove("dark");
-  }
+  // The initial mode (saved choice, else the OS setting) is applied by an
+  // inline script in the page <head> to avoid a flash of the wrong theme.
 
   // Toggle when any button is clicked
   buttons.forEach(btn => {

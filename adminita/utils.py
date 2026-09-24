@@ -10,6 +10,8 @@ class AlwaysVisibleAdmin(admin.ModelAdmin):
     - Custom permissions exist
     - Proxy models are used
 
+    Viewing and editing still follow Django's normal model permissions.
+
     Usage:
         from adminita.utils import AlwaysVisibleAdmin
 
@@ -21,18 +23,6 @@ class AlwaysVisibleAdmin(admin.ModelAdmin):
     def has_module_permission(self, request):
         # Show the model in the sidebar/app list
         return True
-
-    def has_view_permission(self, request, obj=None):
-        # Default: allow viewing the single instance
-        return True
-
-    def get_changelist(self, request, **kwargs):
-        """
-        Prevent redirect-based changelists from breaking app_list rendering.
-        Even if the developer overrides changelist_view, we ensure Django
-        still thinks the model is viewable.
-        """
-        return super().get_changelist(request, **kwargs)
 
 
 class SingletonAdmin(AlwaysVisibleAdmin):
@@ -48,8 +38,8 @@ class SingletonAdmin(AlwaysVisibleAdmin):
     """
 
     def has_add_permission(self, request):
-        # Prevent adding new instances if one exists
-        return not self.model.objects.exists()
+        # Respect Django's add permission, and prevent adding once an instance exists
+        return super().has_add_permission(request) and not self.model.objects.exists()
 
     def has_delete_permission(self, request, obj=None):
         # Prevent deletion of the singleton

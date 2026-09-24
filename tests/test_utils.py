@@ -2,13 +2,11 @@ from unittest.mock import patch
 
 import pytest
 from django.contrib.admin.sites import AdminSite
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
 
 from adminita.utils import AlwaysVisibleAdmin, SingletonAdmin
 from tests.testapp.models import SampleModel
-
-
-class DummyRequest:
-    pass
 
 
 @pytest.fixture
@@ -16,37 +14,64 @@ def site():
     return AdminSite()
 
 
-def test_always_visible_admin_permissions(site):
+@pytest.fixture
+def superuser(db):
+    return get_user_model().objects.create_superuser(
+        username="admin", email="admin@example.com", password="password"
+    )
+
+
+@pytest.fixture
+def staff_user(db):
+    return get_user_model().objects.create_user(
+        username="staff", password="password", is_staff=True
+    )
+
+
+def make_request(rf, user, path="/admin/testapp/samplemodel/"):
+    request = rf.get(path)
+    request.user = user
+    return request
+
+
+def test_always_visible_admin_module_permission(site, rf, staff_user):
     admin_instance = AlwaysVisibleAdmin(SampleModel, site)
-    request = DummyRequest()
-
-    assert admin_instance.has_module_permission(request) is True
-    assert admin_instance.has_view_permission(request) is True
+    assert admin_instance.has_module_permission(make_request(rf, staff_user)) is True
 
 
-@pytest.mark.django_db
-def test_singleton_admin_allows_add_when_empty(site):
+def test_always_visible_admin_respects_view_permission(site, rf, staff_user):
+    admin_instance = AlwaysVisibleAdmin(SampleModel, site)
+    assert admin_instance.has_view_permission(make_request(rf, staff_user)) is False
+
+    staff_user.user_permissions.add(Permission.objects.get(codename="view_samplemodel"))
+    staff_user = get_user_model().objects.get(pk=staff_user.pk)  # clear permission cache
+    assert admin_instance.has_view_permission(make_request(rf, staff_user)) is True
+
+
+def test_singleton_admin_allows_add_when_empty(site, rf, superuser):
     admin_instance = SingletonAdmin(SampleModel, site)
-    request = DummyRequest()
 
     assert SampleModel.objects.count() == 0
-    assert admin_instance.has_add_permission(request) is True
+    assert admin_instance.has_add_permission(make_request(rf, superuser)) is True
 
 
-@pytest.mark.django_db
-def test_singleton_admin_blocks_add_when_instance_exists(site):
+def test_singleton_admin_blocks_add_when_instance_exists(site, rf, superuser):
     SampleModel.objects.create(name="Only one")
     admin_instance = SingletonAdmin(SampleModel, site)
-    request = DummyRequest()
 
-    assert admin_instance.has_add_permission(request) is False
+    assert admin_instance.has_add_permission(make_request(rf, superuser)) is False
 
 
-@pytest.mark.django_db
-def test_singleton_admin_never_allows_delete(site):
+def test_singleton_admin_respects_add_permission(site, rf, staff_user):
+    admin_instance = SingletonAdmin(SampleModel, site)
+
+    assert admin_instance.has_add_permission(make_request(rf, staff_user)) is False
+
+
+def test_singleton_admin_never_allows_delete(site, rf, superuser):
     obj = SampleModel.objects.create(name="Protected")
     admin_instance = SingletonAdmin(SampleModel, site)
-    request = DummyRequest()
+    request = make_request(rf, superuser)
 
     assert admin_instance.has_delete_permission(request, obj) is False
     assert admin_instance.has_delete_permission(request, None) is False

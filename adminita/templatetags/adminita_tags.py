@@ -47,6 +47,3 @@ def safe_contents(field):
                 return field.empty_value_display
         else:
             raise
-    except Exception:
-        # For any other error, return empty value display
-        return getattr(field, "empty_value_display", "-")
