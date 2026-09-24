@@ -7,7 +7,7 @@ A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform you
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![Django](https://img.shields.io/badge/django-4.2+-green.svg)
+![Django](https://img.shields.io/badge/django-4.2%20to%206.0-green.svg)
 ![Tailwind CSS](https://img.shields.io/badge/tailwind-v4-38bdf8.svg)
 ![PyPI](https://img.shields.io/pypi/v/adminita.svg)
 
@@ -99,6 +99,29 @@ python manage.py runserver
 
 That's it! Your Django admin should now have the Adminita theme applied.
 
+## 🆕 What's New in 0.2.0
+
+- **Security fix** for the "add related object" popup (XSS via object names)
+- **Related-field popups fixed**: many-to-many fields keep existing selections, `filter_horizontal` / `filter_vertical` receive new items, and raw ID lookups work
+- **Change list actions fixed**: selection counter, "Select all N across pages" and actions after searching or filtering
+- **Safer form autosave** with a Restore / Discard prompt
+- **Dark mode** now follows your system setting until you use the toggle
+- **Logout and password change** pages now use Adminita's design
+- Tested on Django 4.2 to 6.0
+
+### Upgrading from 0.1.x
+
+1. Upgrade the package and re-collect static files:
+
+```bash
+pip install --upgrade adminita
+python manage.py collectstatic --noinput
+```
+
+2. If your settings include `"adminita.context_processors.admin_app_list"` in `TEMPLATES`, remove it. It's no longer needed and now only raises a deprecation warning.
+
+3. `AlwaysVisibleAdmin` and `SingletonAdmin` now follow Django's model permissions. Staff users who aren't superusers need view (and change) permission on those models to see them. Superusers are not affected.
+
 ## 🎨 Customization
 
 ### Changing Colors
@@ -154,7 +177,7 @@ class MyModelAdmin(AlwaysVisibleAdmin):
 
 ### SingletonAdmin
 
-For models that should only have one instance (like Site Settings). The changelist goes straight to the existing instance, adding is blocked once one exists, and deleting is disabled:
+For models that should only have one instance (like Site Settings). The changelist goes straight to the existing instance, adding is blocked once one exists (or if the user lacks add permission), and deleting is disabled:
 ```python
 from adminita.utils import SingletonAdmin
 
@@ -185,6 +208,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 ```bash
 pip install -r requirements.txt
+pip install -e ".[dev]"   # Adminita itself plus pytest, ruff and black
 npm install
 ```
 
@@ -224,38 +248,24 @@ adminita/
 │   │   │   ├── change_list.html
 │   │   │   └── change_form.html
 │   │   └── registration/     # Points Django's logout/password pages at Adminita's versions
+│   ├── templatetags/         # adminita_tags (readonly field rendering)
+│   ├── utils.py              # AlwaysVisibleAdmin, SingletonAdmin
 │   ├── __init__.py
 │   └── apps.py
 ├── config/                    # Django project settings
 │   ├── settings.py
 │   ├── urls.py
 │   └── wsgi.py
+├── tests/                     # pytest suite
 ├── manage.py
 ├── package.json              # Node.js dependencies for Tailwind
 ├── pyproject.toml            # Python package configuration
 └── README.md
 ```
 
-## 🐛 Known Issues
-
-## Issue: Search and filters break after zero-result state
-
-### Symptoms
-- Search returns correct results
-- Filters work initially
-- After any action that returns zero results, filters stop working
-- JavaScript error: `undefined is not iterable` in actions.js
-
-### Root cause
-Django's admin/js/actions.js expects specific DOM elements that may not exist 
-when the result set is empty, causing a JavaScript crash that breaks subsequent 
-page functionality.
-
-### Workaround
-Disable admin actions or add error handling for the zero-result state.
-
 ## Known Limitations
-These changes make Adminita usable on mobile, not optimized for mobile:
+
+Adminita is usable on mobile, but not yet optimized for it:
 
 - Complex tables - Very wide tables still require horizontal scrolling
 - Inline formsets - Tabular inlines are cramped; consider using stacked inlines for mobile-heavy use cases
@@ -306,26 +316,24 @@ We especially need help with:
 
 ## 📦 Requirements
 
-- Python 3.10+
-- Django 4.2+
+- Python 3.10+ (3.12+ for Django 6.0)
+- Django 4.2, 5.0, 5.1, 5.2 or 6.0
 - Node.js (for building CSS during development)
 - npm (for managing Tailwind CSS)
 
 ## 🧪 Testing
 
 ```bash
-# Run the test suite
-pytest
-
-# Or via Django's test runner
-python manage.py test
+pytest                   # Run the test suite
+ruff check .             # Lint
+black --check .          # Formatting
 ```
 
 Tests run automatically on every pull request via GitHub Actions across supported Python/Django versions. Manual checks worth doing before submitting a PR: multiple browsers (Chrome, Firefox, Safari, Edge), dark mode toggle, and responsive layout on mobile.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
 
 ## 👏 Acknowledgments
 
@@ -356,6 +364,7 @@ Having trouble? Here are some ways to get help:
 
 - [x] Publish to PyPI
 - [x] Fix dark mode toggle functionality
+- [x] Django 6.0 support
 - [ ] Add more customization options
 - [ ] Create additional color themes
 - [ ] Improve accessibility (ARIA labels, keyboard navigation)
