@@ -46,8 +46,13 @@ pip install adminita
 ```bash
 git clone https://github.com/djangify/adminita.git
 cd adminita
+pip install -r requirements.txt   # demo project dependencies
 pip install -e .
+python manage.py migrate
+python manage.py createsuperuser
 ```
+
+The demo project reads optional settings from a `.env` file (see `.env.example`); it runs without one for local use.
 
 ### Configuration
 
@@ -89,13 +94,20 @@ admin.site.index_title = "Welcome to Your Site"
 python manage.py collectstatic --noinput
 ```
 
-5. **Run your server**:
+5. **Create the database tables and an admin user** (skip if your project already has them):
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+6. **Run your server**:
 
 ```bash
 python manage.py runserver
 ```
 
-6. **Visit the admin** at `http://localhost:8000/admin/`
+7. **Visit the admin** at `http://localhost:8000/admin/`
 
 That's it! Your Django admin should now have the Adminita theme applied.
 
