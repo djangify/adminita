@@ -15,9 +15,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Environment :: Web Environment",
     "Framework :: Django",
-    "Framework :: Django :: 4.2",
-    "Framework :: Django :: 5.0",
-    "Framework :: Django :: 5.1",
     "Framework :: Django :: 5.2",
     "Framework :: Django :: 6.0",
     "Intended Audience :: Developers",
@@ -33,7 +30,7 @@ classifiers = [
 keywords = ["django", "admin", "tailwind", "tailwindcss", "ui", "adminita"]
 requires-python = ">=3.10"
 dependencies = [
-    "Django>=4.2",
+    "Django>=5.2",
 ]
 
 [project.optional-dependencies]

@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-        django-version: ["4.2", "5.0", "5.1", "5.2", "6.0"]
+        django-version: ["5.2", "6.0"]
         exclude:
           # Django 6.0 requires Python 3.12+
           - django-version: "6.0"
@@ -61,6 +61,21 @@ jobs:
 
       - name: Run black --check
         run: black --check .
+
+  js-tests:
+    name: JavaScript tests (autosave)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
 
   clean-install:
     name: Clean install smoke test (README steps) + wheel contents
