@@ -111,7 +111,24 @@ python manage.py runserver
 
 That's it! Your Django admin should now have the Adminita theme applied.
 
-## 🆕 What's New in 0.2.0
+## 🆕 What's New in 0.2.1
+
+- **Django 5.2 or newer is now required.** Django 4.2, 5.0 and 5.1 have reached end of life and are no longer supported or tested. Supported: Django 5.2 and 6.0.
+- Setup instructions for running the demo project from a clone now work on a clean machine (dependencies, `migrate` and `createsuperuser` are included).
+- The demo project reads `DEBUG` and `ALLOWED_HOSTS` from a `.env` file (see `.env.example`) and defaults to localhost only.
+- Demo dependencies updated to a patched Django 5.2 release; unused demo dependencies removed.
+- New automated tests: JavaScript tests for form autosave (`npm test`), admin login-flow tests, and a CI check that the published package contains its templates, static files and license.
+
+### Upgrading from 0.2.0
+
+```bash
+pip install --upgrade adminita
+python manage.py collectstatic --noinput
+```
+
+No template or settings changes are needed. If your project still runs Django 4.2, 5.0 or 5.1, upgrade Django to 5.2 or newer first, or stay on Adminita 0.2.0 (which no longer receives updates).
+
+## What's New in 0.2.0
 
 - **Security fix** for the "add related object" popup (XSS via object names)
 - **Related-field popups fixed**: many-to-many fields keep existing selections, `filter_horizontal` / `filter_vertical` receive new items, and raw ID lookups work
@@ -121,7 +138,7 @@ That's it! Your Django admin should now have the Adminita theme applied.
 - **Logout and password change** pages now use Adminita's design
 - Tested on Django 4.2 to 6.0
 
-### Upgrading from 0.1.x
+### Upgrading from 0.1.x (to 0.2.0)
 
 1. Upgrade the package and re-collect static files:
 
