@@ -77,7 +77,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](CO
 ## Testing
 
 - Add or update tests in the `tests/` directory for any behavioral change (custom admin classes, context processors, template tags, etc.).
-- Run `pytest` locally before submitting. CI runs the same suite across supported Python/Django versions on every PR.
+- Run `pytest` and `npm test` locally before submitting. CI runs both suites (Python tests across supported Python/Django versions) on every PR.
 - Manually verify in a browser: dark mode toggle, responsive/mobile layout, and the specific admin pages you touched.
 
 ## Reporting Bugs / Requesting Features

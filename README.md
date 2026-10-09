@@ -7,7 +7,7 @@ A modern, beautiful Django admin theme built with Tailwind CSS v4. Transform you
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
-![Django](https://img.shields.io/badge/django-4.2%20to%206.0-green.svg)
+![Django](https://img.shields.io/badge/django-5.2%20to%206.0-green.svg)
 ![Tailwind CSS](https://img.shields.io/badge/tailwind-v4-38bdf8.svg)
 ![PyPI](https://img.shields.io/pypi/v/adminita.svg)
 
@@ -46,8 +46,13 @@ pip install adminita
 ```bash
 git clone https://github.com/djangify/adminita.git
 cd adminita
+pip install -r requirements.txt   # demo project dependencies
 pip install -e .
+python manage.py migrate
+python manage.py createsuperuser
 ```
+
+The demo project reads optional settings from a `.env` file (see `.env.example`); it runs without one for local use.
 
 ### Configuration
 
@@ -89,13 +94,20 @@ admin.site.index_title = "Welcome to Your Site"
 python manage.py collectstatic --noinput
 ```
 
-5. **Run your server**:
+5. **Create the database tables and an admin user** (skip if your project already has them):
+
+```bash
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+6. **Run your server**:
 
 ```bash
 python manage.py runserver
 ```
 
-6. **Visit the admin** at `http://localhost:8000/admin/`
+7. **Visit the admin** at `http://localhost:8000/admin/`
 
 That's it! Your Django admin should now have the Adminita theme applied.
 
@@ -317,14 +329,15 @@ We especially need help with:
 ## 📦 Requirements
 
 - Python 3.10+ (3.12+ for Django 6.0)
-- Django 4.2, 5.0, 5.1, 5.2 or 6.0
+- Django 5.2 or 6.0 (older releases are end-of-life and no longer supported)
 - Node.js (for building CSS during development)
 - npm (for managing Tailwind CSS)
 
 ## 🧪 Testing
 
 ```bash
-pytest                   # Run the test suite
+pytest                   # Run the Python test suite
+npm test                 # Run the JavaScript tests (needs `npm install` first)
 ruff check .             # Lint
 black --check .          # Formatting
 ```

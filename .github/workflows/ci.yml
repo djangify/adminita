@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-        django-version: ["4.2", "5.0", "5.1", "5.2", "6.0"]
+        django-version: ["5.2", "6.0"]
         exclude:
           # Django 6.0 requires Python 3.12+
           - django-version: "6.0"
@@ -61,3 +61,52 @@ jobs:
 
       - name: Run black --check
         run: black --check .
+
+  js-tests:
+    name: JavaScript tests (autosave)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+  clean-install:
+    name: Clean install smoke test (README steps) + wheel contents
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Follow the README from-source steps in a fresh venv
+        run: |
+          python -m venv /tmp/fresh
+          /tmp/fresh/bin/pip install -r requirements.txt
+          /tmp/fresh/bin/pip install -e .
+          /tmp/fresh/bin/python manage.py migrate --noinput
+          /tmp/fresh/bin/python manage.py check
+
+      - name: Build wheel and verify packaged files
+        run: |
+          python -m pip install build
+          python -m build
+          python - <<'PY'
+          import glob, zipfile
+          names = zipfile.ZipFile(glob.glob("dist/*.whl")[0]).namelist()
+          for required in (
+              "adminita/templates/admin/base.html",
+              "adminita/static/adminita/adminita-tailwind.css",
+              "adminita/static/adminita/adminita-autosave.js",
+          ):
+              assert required in names, f"missing from wheel: {required}"
+          assert any("licenses/LICENSE" in n for n in names), "license missing from wheel"
+          PY
