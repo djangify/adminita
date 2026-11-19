@@ -417,6 +417,8 @@ Made with ❤️ by a Django enthusiast
 
 **Developer LinkedIn**: https://linkedin.com/in/todianedev
 
+**Buy Me A Tea**: https://thanks.dianecorriette.com/
+
 **Coffee Always Welcome**: https://ko-fi.com/todianedev ❤️
 
 
