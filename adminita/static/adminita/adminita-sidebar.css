@@ -1,0 +1,38 @@
+/* Collapsible sidebar sections. Plain CSS so no Tailwind rebuild is needed. */
+#sidebar details.sb-group > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+#sidebar details.sb-group > summary::-webkit-details-marker { display: none; }
+#sidebar details.sb-group > summary::after {
+  content: "";
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: 0.35rem;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  flex: none;
+}
+#sidebar details.sb-group[open] > summary::after { transform: rotate(-135deg); }
+#sidebar details.sb-group > summary:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 0.375rem;
+}
+#sidebar .adminita-sb-controls {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 0.75rem 0.75rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+#sidebar .adminita-sb-controls[hidden] { display: none; }
+#sidebar .adminita-sb-controls button { cursor: pointer; background: none; border: 0; padding: 0; color: inherit; }
+#sidebar .adminita-sb-controls button:hover { text-decoration: underline; }
+.dark #sidebar .adminita-sb-controls { color: #9ca3af; }

@@ -111,7 +111,20 @@ python manage.py runserver
 
 That's it! Your Django admin should now have the Adminita theme applied.
 
-## 🆕 What's New in 0.2.1
+## 🆕 What's New in 0.2.2
+
+- **Collapsible sidebar.** Each section (Shop, Blog, Authentication and so on) now folds and opens. The section you are on is always open, and the others remember how you left them in your browser. Works on desktop and phone.
+- **Expand all / Collapse all** links at the top of the sidebar.
+- No settings and no template changes are needed. If your project has its own copy of `templates/admin/base.html`, delete it (or merge the new `sidebar_content` block) to get the collapsible sidebar.
+
+### Upgrading from 0.2.1
+
+```bash
+pip install --upgrade adminita
+python manage.py collectstatic --noinput
+```
+
+## What's New in 0.2.1
 
 - **Django 5.2 or newer is now required.** Django 4.2, 5.0 and 5.1 have reached end of life and are no longer supported or tested. Supported: Django 5.2 and 6.0.
 - Setup instructions for running the demo project from a clone now work on a clean machine (dependencies, `migrate` and `createsuperuser` are included).
