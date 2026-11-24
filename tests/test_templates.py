@@ -30,9 +30,7 @@ def test_sidebar_sections_are_collapsible_and_current_one_is_open():
     class Req:
         path = "/admin/shop/product/"
 
-    html = render_to_string(
-        "admin/base.html", {"available_apps": [shop, blog], "request": Req()}
-    )
+    html = render_to_string("admin/base.html", {"available_apps": [shop, blog], "request": Req()})
     assert html.count('<details class="sb-group"') == 2
     assert 'data-group="shop" open data-active="1"' in html
     assert 'data-group="blog">' in html
